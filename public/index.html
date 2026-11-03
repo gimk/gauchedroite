@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>GAUCHE / DROITE — L'Épreuve des Idées</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23D62828'/><path d='M16 2 A14 14 0 0 1 16 30 Z' fill='%2319377D'/></svg>" type="image/svg+xml">
+
+  <!-- Expressive Google Fonts: Instrument Serif, Space Grotesk & Syne -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Silk-Screen / Risograph Fine Grain Texture Overlay -->
+  <div class="noise-overlay" aria-hidden="true"></div>
+
+  <!-- Editorial Masthead Floating Over Split Line & Player Stats -->
+  <header class="masthead">
+    <div class="stats-group stats-left">
+      <div class="stat-item">
+        <span class="stat-label">SÉRIE</span>
+        <span class="stat-value" id="stat-streak">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">RECORD</span>
+        <span class="stat-value" id="stat-best">0</span>
+      </div>
+    </div>
+
+    <div class="brand-pill" role="banner">
+      <div class="brand-title">
+        <span class="brand-gauche">GAUCHE</span>
+        <span class="brand-sep">/</span>
+        <span class="brand-droite">DROITE</span>
+      </div>
+      <div class="brand-tagline">L'ÉPREUVE DES IDÉES</div>
+    </div>
+
+    <div class="stats-group stats-right">
+      <div class="stat-item">
+        <span class="stat-label">MAJORITÉ</span>
+        <span class="stat-value" id="stat-majority">0%</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">VICTOIRES</span>
+        <span class="stat-value" id="stat-wins">0/0</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Interactive Dual-Hemisphere Split Viewport -->
+  <main class="split-viewport" id="viewport">
+    
+    <!-- LEFT HALF: GAUCHE (Vermilion Editorial Red) -->
+    <section class="side-panel side-left" id="panel-left" role="button" tabindex="0" aria-label="Voter Gauche">
+      <div class="side-glow" aria-hidden="true"></div>
+      <div class="side-content">
+        <div class="side-watermark" aria-hidden="true">GAUCHE</div>
+        
+        <div class="side-voting-hint">
+          <span class="hint-arrow">←</span>
+          <span class="hint-text">GAUCHE</span>
+          <span class="hint-key">[←]</span>
+        </div>
+
+        <!-- Community Results Reveal (Left Hemisphere) -->
+        <div class="side-results" id="results-left" aria-hidden="true">
+          <div class="result-number-wrap">
+            <span class="result-percentage" id="percent-left">0</span><span class="result-unit">%</span>
+          </div>
+          <div class="result-votes-count" id="votes-left">0 votes</div>
+          <div class="user-choice-badge" id="badge-left">
+            <span class="badge-dot"></span> VOTRE VOTE
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT HALF: DROITE (Cobalt Editorial Blue) -->
+    <section class="side-panel side-right" id="panel-right" role="button" tabindex="0" aria-label="Voter Droite">
+      <div class="side-glow" aria-hidden="true"></div>
+      <div class="side-content">
+        <div class="side-watermark" aria-hidden="true">DROITE</div>
+        
+        <div class="side-voting-hint">
+          <span class="hint-key">[→]</span>
+          <span class="hint-text">DROITE</span>
+          <span class="hint-arrow">→</span>
+        </div>
+
+        <!-- Community Results Reveal (Right Hemisphere) -->
+        <div class="side-results" id="results-right" aria-hidden="true">
+          <div class="result-number-wrap">
+            <span class="result-percentage" id="percent-right">0</span><span class="result-unit">%</span>
+          </div>
+          <div class="result-votes-count" id="votes-right">0 votes</div>
+          <div class="user-choice-badge" id="badge-right">
+            <span class="badge-dot"></span> VOTRE VOTE
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hairline Vertical Split Boundary -->
+    <div class="split-hairline" id="split-divider" aria-hidden="true">
+      <div class="hairline-knot"></div>
+    </div>
+
+    <!-- Center Stage: Literary Typography & Interactive Physics -->
+    <div class="center-stage" id="center-stage" aria-live="polite">
+      <div class="word-card" id="word-card">
+        <div class="word-meta" id="word-meta">
+          <span class="meta-index" id="meta-index">N° 1</span>
+        </div>
+
+        <div class="word-container" id="word-container">
+          <h1 class="main-word" id="main-word">Chargement...</h1>
+        </div>
+
+        <!-- Majority / Minority Verdict Banner -->
+        <div class="verdict-banner" id="verdict-banner">
+          <div class="verdict-pill" id="verdict-pill">
+            <span class="verdict-icon" id="verdict-icon">✦</span>
+            <span class="verdict-text" id="verdict-text">DANS LA MAJORITÉ</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Prompt (Voting or Advance on Click) -->
+    <div class="stage-footer">
+      <div class="prompt-vote" id="prompt-vote">
+        <span class="prompt-text">Cliquez sur un côté ou utilisez ← →</span>
+      </div>
+      <div class="prompt-continue" id="prompt-continue">
+        <button class="continue-button" id="btn-continue" type="button" aria-label="Continuer vers le mot suivant">
+          <span>Cliquer pour continuer</span>
+          <span class="continue-arrow">→</span>
+          <span class="continue-badge">ESPACE</span>
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

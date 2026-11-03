@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS votes (
+  word TEXT PRIMARY KEY,
+  left_votes INTEGER NOT NULL DEFAULT 0,
+  right_votes INTEGER NOT NULL DEFAULT 0,
+  updated_at INTEGER NOT NULL DEFAULT (unixepoch())
+);

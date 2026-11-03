@@ -1,0 +1,17 @@
+{
+  "name": "gauche-droite",
+  "version": "1.0.0",
+  "description": "Gauche ou Droite ? Le jeu des clichés français",
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/dev-server.mjs",
+    "generate-seed": "node scripts/generate-seed.mjs",
+    "d1:init": "wrangler d1 execute leftright-db --local --file=./schema.sql",
+    "d1:seed": "wrangler d1 execute leftright-db --local --file=./seed.sql",
+    "dev": "wrangler pages dev public --compatibility-date=2024-01-01",
+    "deploy": "wrangler pages deploy public"
+  },
+  "devDependencies": {
+    "wrangler": "^3.100.0"
+  }
+}
