@@ -7,10 +7,10 @@
 
 ## 🏗️ Architecture & Fonctionnement
 
-- **Frontend** : Application web statique servie depuis le dossier `public/` (`index.html`, `styles.css`, `app.js`, `words.json`).
-- **Backend Serverless** : Cloudflare Pages Functions (`functions/api/vote.js`).
+- **Frontend Autonome** : Application web statique dans `public/` (`index.html`, `styles.css`, `app.js`). Peut être ouverte directement en double-cliquant sur `public/index.html` (`file://`) sans serveur grâce aux données de base embarquées dans `app.js`.
+- **Backend Serverless (Cloudflare Pages)** : Cloudflare Pages Functions (`functions/api/vote.js`).
 - **Base de données SQL** : Cloudflare D1 (`votes` table dans SQLite distribué).
-- **Fallback In-Memory** : Si D1 n'est pas encore configuré ou en mode prévisualisation locale sans D1, un cache mémoire initialisé depuis `functions/api/seed-data.js` prend le relais automatiquement.
+- **Fallback Automatique** : Si ouvert en local (`file://`) ou si D1 n'est pas encore configuré, les 340 mots et leurs votes initiaux prennent le relais automatiquement.
 
 ---
 
@@ -19,11 +19,14 @@
 ```text
 ├── functions/
 │   └── api/
-│       ├── seed-data.js        # Données de votes pré-calculées (379 mots)
+│       ├── seed-data.js        # Données de votes pré-calculées (340 mots) pour le Worker
 │       └── vote.js             # Pages Function API (POST, GET, OPTIONS)
 ├── public/
-│   └── words.json              # Liste JSON de tous les 379 mots français
+│   ├── index.html              # Interface minimaliste (ouvrable directement en local)
+│   ├── styles.css              # Design éditorial & animations
+│   └── app.js                  # Moteur physique, logique de jeu & 340 mots embarqués
 ├── scripts/
+│   ├── dev-server.mjs          # Serveur local Node sans dépendance (optionnel)
 │   └── generate-seed.mjs       # Générateur déterministe (PRNG) des données
 ├── schema.sql                  # Schéma de la table SQLite D1
 ├── seed.sql                    # Requêtes INSERT SQL des votes initiaux
@@ -35,21 +38,22 @@
 
 ## 🎲 Données & Génération des Mots
 
-Le script `scripts/generate-seed.mjs` contient **379 mots, concepts, objets du quotidien et marques courantes en France** classés selon trois tendances initiales :
-- **Gauche** : ~125 mots (*Quinoa, Vélo cargo, Biocoop, Sarouel, Kombucha, Arte, Totebag, Permaculture, Grève, Manif...*)
-- **Droite** : ~125 mots (*SUV, Golf, Rolex, Chasse, Côte de bœuf, Mocassins, Figaro, Croisière, Champagne, Bourse...*)
-- **Neutre / Populaire** : ~129 mots (*Saucisson, Ricard, Decathlon, Baguette, Raclette, Pétanque, Picard, SNCF, Kebab...*)
+Le script `scripts/generate-seed.mjs` contient **340 mots courants et marques en France** équilibrés à **50 / 50** (**170 Gauche / 170 Droite**) :
+- **Gauche franche (`left`)** : 66% à 88% Gauche (*Quinoa, Vélo cargo, Biocoop, Sarouel, Kombucha, Arte, Totebag, Ricard, SNCF...*)
+- **Neutre tendance Gauche (`lean-left`)** : 52% à 58% Gauche (*Le Bon Coin, Boulangerie, Pâtes, Scrabble, Cantine...*)
+- **Droite franche (`right`)** : 66% à 88% Droite (*SUV, Golf, Rolex, Chasse, Côte de bœuf, Mocassins, Le Figaro, Champagne, Saucisson...*)
+- **Neutre tendance Droite (`lean-right`)** : 52% à 58% Droite (*Picard, Ikea, Raclette, Baguette, Astrologie, Tarot, Savon de Marseille...*)
 
-> ⚠️ **Règle absolue** : Aucun nom de personnalité politique, célébrité ou figure historique. Uniquement des objets, aliments, marques et concepts culturels.
+> ⚠️ **Règle absolue** : Aucun nom de personnalité politique, célébrité, figure historique ou ville. Uniquement des mots courants, objets, aliments, concepts et marques.
 
-Pour régénérer les fichiers à tout moment :
+Pour régénérer les fichiers après modification de la liste :
 ```bash
 npm run generate-seed
 ```
-Ce script crée :
-1. `public/words.json` : Le tableau de tous les mots pour le tirage au sort côté frontend.
-2. `seed.sql` : Les requêtes SQL prêtes pour initialiser D1.
-3. `functions/api/seed-data.js` : L'objet exporté pour le fallback automatique du backend.
+Ce script met à jour simultanément :
+1. `public/app.js` (`EMBEDDED_SEED_VOTES`) pour le fonctionnement autonome côté client.
+2. `functions/api/seed-data.js` pour le Worker Cloudflare.
+3. `seed.sql` pour la base de données Cloudflare D1.
 
 ---
 

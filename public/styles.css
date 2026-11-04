@@ -440,33 +440,12 @@ body.revealed .center-stage {
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
 }
 
-.meta-dot {
-  color: var(--color-cream-muted);
-}
-
 .word-container {
   display: flex;
   align-items: baseline;
   justify-content: center;
   position: relative;
   line-height: 1.05;
-}
-
-.quote-mark {
-  font-family: 'Instrument Serif', Georgia, serif;
-  font-size: clamp(3rem, 6.8vw, 6rem);
-  font-weight: 400;
-  color: var(--color-cream-muted);
-  line-height: 1;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-}
-
-.quote-left {
-  margin-right: 6px;
-}
-
-.quote-right {
-  margin-left: 6px;
 }
 
 .main-word {
@@ -806,10 +785,6 @@ body.revealed .side-results {
 
   .main-word {
     font-size: clamp(2.4rem, 10vw, 4.2rem);
-  }
-
-  .quote-mark {
-    font-size: clamp(2.2rem, 8.5vw, 3.6rem);
   }
 
   .result-percentage {

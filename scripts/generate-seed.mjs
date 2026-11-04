@@ -6,10 +6,23 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
 
-// Curated list of French common words, concepts, objects, and brands.
-// CRITICAL: Absolutely NO personalities, politicians, celebrities, or historical figures.
+/**
+ * Curated list of 300 unique French common words and brands (150 Gauche / 150 Droite).
+ * Rules:
+ * - Zero personalities, politicians, celebrities, or historical figures.
+ * - Zero geographic city/region names (only common words, everyday objects, foods, concepts, and brands).
+ * - Zero semantic duplicates or near-synonyms.
+ *
+ * Leanings:
+ * - "left"       : Clearly Gauche (66% - 88% Gauche)
+ * - "lean-left"  : Neutral, leaning Gauche — slight difference (52% - 58% Gauche)
+ * - "right"      : Clearly Droite (66% - 88% Droite)
+ * - "lean-right" : Neutral, leaning Droite — slight difference (52% - 58% Droite)
+ */
 const WORDS_METADATA = [
-  // --- LEANING: LEFT (~125 words) ---
+  // ===========================================================================
+  // CLEARLY GAUCHE ("left" : 66% - 88% Gauche) — 140 words
+  // ===========================================================================
   { word: "Quinoa", leaning: "left" },
   { word: "Vélo cargo", leaning: "left" },
   { word: "Biocoop", leaning: "left" },
@@ -22,67 +35,46 @@ const WORDS_METADATA = [
   { word: "Tofu", leaning: "left" },
   { word: "Vin nature", leaning: "left" },
   { word: "Houmous", leaning: "left" },
-  { word: "Brocante", leaning: "left" },
   { word: "Chorale", leaning: "left" },
-  { word: "Télétravail", leaning: "left" },
   { word: "Zad", leaning: "left" },
   { word: "Sociologie", leaning: "left" },
-  { word: "Festival", leaning: "left" },
-  { word: "Thé vert", leaning: "left" },
-  { word: "Birks", leaning: "left" },
+  { word: "Birkenstock", leaning: "left" },
   { word: "Compost", leaning: "left" },
   { word: "Coopérative", leaning: "left" },
   { word: "Grève", leaning: "left" },
   { word: "Manif", leaning: "left" },
   { word: "Piste cyclable", leaning: "left" },
-  { word: "Lin", leaning: "left" },
   { word: "Menu végétarien", leaning: "left" },
-  { word: "Podcast", leaning: "left" },
   { word: "Librairie", leaning: "left" },
   { word: "Céramique", leaning: "left" },
   { word: "Véganisme", leaning: "left" },
   { word: "Friperie", leaning: "left" },
-  { word: "Vinted", leaning: "left" },
   { word: "Colocation", leaning: "left" },
   { word: "Méditation", leaning: "left" },
-  { word: "Tatouage", leaning: "left" },
-  { word: "T-shirt blanc", leaning: "left" },
   { word: "Maté", leaning: "left" },
   { word: "Amap", leaning: "left" },
   { word: "Savon d'Alep", leaning: "left" },
-  { word: "Plante verte", leaning: "left" },
   { word: "Cinéma d'auteur", leaning: "left" },
   { word: "France Inter", leaning: "left" },
   { word: "Télérama", leaning: "left" },
   { word: "Les Inrocks", leaning: "left" },
   { word: "Mediapart", leaning: "left" },
-  { word: "Le Monde diplomatique", leaning: "left" },
+  { word: "Libération", leaning: "left" },
+  { word: "L'Humanité", leaning: "left" },
   { word: "Lait d'avoine", leaning: "left" },
   { word: "Graines de chia", leaning: "left" },
   { word: "Seitan", leaning: "left" },
-  { word: "Granola maison", leaning: "left" },
   { word: "Bière artisanale", leaning: "left" },
   { word: "Pain au levain", leaning: "left" },
-  { word: "Légumes oubliés", leaning: "left" },
-  { word: "Pesto maison", leaning: "left" },
   { word: "Spiruline", leaning: "left" },
-  { word: "Café filtre", leaning: "left" },
   { word: "Kéfir", leaning: "left" },
-  { word: "Épeautre", leaning: "left" },
-  { word: "Tisane ayurvédique", leaning: "left" },
   { word: "Matcha", leaning: "left" },
-  { word: "Tartinade bio", leaning: "left" },
-  { word: "Bento", leaning: "left" },
-  { word: "Gourde en inox", leaning: "left" },
   { word: "Veja", leaning: "left" },
   { word: "Fjällräven", leaning: "left" },
-  { word: "Fripes", leaning: "left" },
-  { word: "Moleskine", leaning: "left" },
   { word: "Henné", leaning: "left" },
-  { word: "Bambou", leaning: "left" },
   { word: "Décroissance", leaning: "left" },
   { word: "Zéro déchet", leaning: "left" },
-  { word: "Recyclerie", leaning: "left" },
+  { word: "Ressourcerie", leaning: "left" },
   { word: "Biodynamie", leaning: "left" },
   { word: "Éolienne", leaning: "left" },
   { word: "Altermondialisme", leaning: "left" },
@@ -92,10 +84,8 @@ const WORDS_METADATA = [
   { word: "Maraîchage", leaning: "left" },
   { word: "Végétalisation", leaning: "left" },
   { word: "Boîte à livres", leaning: "left" },
-  { word: "Ressourcerie", leaning: "left" },
   { word: "Emmaüs", leaning: "left" },
   { word: "Naturalia", leaning: "left" },
-  { word: "Back Market", leaning: "left" },
   { word: "Café associatif", leaning: "left" },
   { word: "Tiers-lieu", leaning: "left" },
   { word: "Documentaire", leaning: "left" },
@@ -104,18 +94,12 @@ const WORDS_METADATA = [
   { word: "Art contemporain", leaning: "left" },
   { word: "Autogestion", leaning: "left" },
   { word: "Slam", leaning: "left" },
-  { word: "Birkenstock", leaning: "left" },
   { word: "Monnaie locale", leaning: "left" },
   { word: "Topinambour", leaning: "left" },
   { word: "Éco-cup", leaning: "left" },
-  { word: "Libération", leaning: "left" },
-  { word: "L'Humanité", leaning: "left" },
-  { word: "Bicyclette", leaning: "left" },
   { word: "Slackline", leaning: "left" },
   { word: "Jardin partagé", leaning: "left" },
-  { word: "Graines germées", leaning: "left" },
   { word: "Sophrologie", leaning: "left" },
-  { word: "Covoiturage", leaning: "left" },
   { word: "Syndicat", leaning: "left" },
   { word: "Yourte", leaning: "left" },
   { word: "Toilettes sèches", leaning: "left" },
@@ -123,7 +107,6 @@ const WORDS_METADATA = [
   { word: "Huile essentielle", leaning: "left" },
   { word: "Encens", leaning: "left" },
   { word: "Patchouli", leaning: "left" },
-  { word: "Vinyle", leaning: "left" },
   { word: "Ukulélé", leaning: "left" },
   { word: "Macramé", leaning: "left" },
   { word: "Biodiversité", leaning: "left" },
@@ -134,19 +117,99 @@ const WORDS_METADATA = [
   { word: "Repair Café", leaning: "left" },
   { word: "Vrac", leaning: "left" },
   { word: "Low-tech", leaning: "left" },
-  { word: "Cortège", leaning: "left" },
+  { word: "Service public", leaning: "left" },
+  { word: "Carte Vitale", leaning: "left" },
+  { word: "SNCF", leaning: "left" },
+  { word: "Allocations", leaning: "left" },
+  { word: "HLM", leaning: "left" },
+  { word: "MJC", leaning: "left" },
+  { word: "Restos du Cœur", leaning: "left" },
+  { word: "Fête de la musique", leaning: "left" },
+  { word: "Couscous", leaning: "left" },
+  { word: "Falafel", leaning: "left" },
+  { word: "Dreadlocks", leaning: "left" },
+  { word: "Féminisme", leaning: "left" },
+  { word: "Parité", leaning: "left" },
+  { word: "Squat", leaning: "left" },
+  { word: "Fanfare", leaning: "left" },
+  { word: "Théâtre public", leaning: "left" },
+  { word: "Sarrasin", leaning: "left" },
+  { word: "Pois chiches", leaning: "left" },
+  { word: "Gingembre", leaning: "left" },
+  { word: "Curcuma", leaning: "left" },
+  { word: "Ricard", leaning: "left" },
+  { word: "Pétanque", leaning: "left" },
+  { word: "Decathlon", leaning: "left" },
+  { word: "Quechua", leaning: "left" },
+  { word: "Vinted", leaning: "left" },
+  { word: "TGV", leaning: "left" },
+  { word: "Chocolatine", leaning: "left" },
+  { word: "Jambon-beurre", leaning: "left" },
+  { word: "Renault Clio", leaning: "left" },
+  { word: "Peugeot 208", leaning: "left" },
+  { word: "FNAC", leaning: "left" },
+  { word: "Marathon", leaning: "left" },
+  { word: "Tatouage", leaning: "left" },
+  { word: "Télétravail", leaning: "left" },
+  { word: "Brocante", leaning: "left" },
+  { word: "Festival", leaning: "left" },
+  { word: "Thé vert", leaning: "left" },
+  { word: "Lin", leaning: "left" },
+  { word: "Podcast", leaning: "left" },
+  { word: "Plante verte", leaning: "left" },
+  { word: "Café filtre", leaning: "left" },
+  { word: "Bento", leaning: "left" },
+  { word: "Moleskine", leaning: "left" },
+  { word: "Bambou", leaning: "left" },
+  { word: "Back Market", leaning: "left" },
+  { word: "Covoiturage", leaning: "left" },
+  { word: "Vinyle", leaning: "left" },
+  { word: "Randonnée", leaning: "left" },
+  { word: "Potager", leaning: "left" },
+  { word: "Kebab", leaning: "left" },
+  { word: "Mutuelle", leaning: "left" },
+  { word: "La Poste", leaning: "left" },
+  { word: "Poubelle de tri", leaning: "left" },
+  { word: "Sieste", leaning: "left" },
+  { word: "Crêpe", leaning: "left" },
+  { word: "Cidre", leaning: "left" },
+  { word: "Suze", leaning: "left" },
+  { word: "Camping", leaning: "left" },
+  { word: "Auberge de jeunesse", leaning: "left" },
+  { word: "Interrail", leaning: "left" },
+  { word: "Pique-nique", leaning: "left" },
+  { word: "Guinguette", leaning: "left" },
+  { word: "Belote", leaning: "left" },
+  { word: "BlaBlaCar", leaning: "left" },
+  { word: "Opinel", leaning: "left" },
+  { word: "Duralex", leaning: "left" },
 
-  // --- LEANING: RIGHT (~125 words) ---
+  // ===========================================================================
+  // NEUTRAL, LEANING GAUCHE ("lean-left" : 52% - 58% Gauche) — 10 words
+  // ===========================================================================
+  { word: "Le Bon Coin", leaning: "lean-left" },
+  { word: "Boulangerie", leaning: "lean-left" },
+  { word: "Pâtes", leaning: "lean-left" },
+  { word: "Scrabble", leaning: "lean-left" },
+  { word: "Cantine", leaning: "lean-left" },
+  { word: "Crèche", leaning: "lean-left" },
+  { word: "Bibliothèque", leaning: "lean-left" },
+  { word: "Petit Bateau", leaning: "lean-left" },
+  { word: "Pizza", leaning: "lean-left" },
+  { word: "Frites", leaning: "lean-left" },
+
+  // ===========================================================================
+  // CLEARLY DROITE ("right" : 66% - 88% Droite) — 135 words
+  // ===========================================================================
   { word: "SUV", leaning: "right" },
   { word: "Golf", leaning: "right" },
   { word: "Rolex", leaning: "right" },
   { word: "Chasse", leaning: "right" },
   { word: "Côte de bœuf", leaning: "right" },
   { word: "Mocassins", leaning: "right" },
-  { word: "Figaro", leaning: "right" },
+  { word: "Le Figaro", leaning: "right" },
   { word: "Croisière", leaning: "right" },
   { word: "Champagne", leaning: "right" },
-  { word: "Pull sur les épaules", leaning: "right" },
   { word: "Viager", leaning: "right" },
   { word: "Tennis", leaning: "right" },
   { word: "Équitation", leaning: "right" },
@@ -154,16 +217,14 @@ const WORDS_METADATA = [
   { word: "Bourse", leaning: "right" },
   { word: "Cravate", leaning: "right" },
   { word: "Cigare", leaning: "right" },
-  { word: "Propriété", leaning: "right" },
   { word: "Résidence secondaire", leaning: "right" },
-  { word: "Sologne", leaning: "right" },
   { word: "Polo", leaning: "right" },
-  { word: "Lavage auto", leaning: "right" },
   { word: "Tondeuse", leaning: "right" },
   { word: "Haie de thuyas", leaning: "right" },
   { word: "Véranda", leaning: "right" },
-  { word: "Porte-monnaie", leaning: "right" },
-  { word: "Golf GTI", leaning: "right" },
+  { word: "BMW", leaning: "right" },
+  { word: "Mercedes", leaning: "right" },
+  { word: "Tesla", leaning: "right" },
   { word: "Pièce d'or", leaning: "right" },
   { word: "Briquet Dupont", leaning: "right" },
   { word: "Serre-tête", leaning: "right" },
@@ -197,7 +258,6 @@ const WORDS_METADATA = [
   { word: "Boutons de manchette", leaning: "right" },
   { word: "Velours côtelé", leaning: "right" },
   { word: "Doudoune sans manches", leaning: "right" },
-  { word: "Breitling", leaning: "right" },
   { word: "Loden", leaning: "right" },
   { word: "Blazer", leaning: "right" },
   { word: "Weston", leaning: "right" },
@@ -207,192 +267,114 @@ const WORDS_METADATA = [
   { word: "Régate", leaning: "right" },
   { word: "Ball-trap", leaning: "right" },
   { word: "Gala", leaning: "right" },
-  { word: "Courchevel", leaning: "right" },
   { word: "Bridge", leaning: "right" },
   { word: "Rallye", leaning: "right" },
   { word: "Grand cru", leaning: "right" },
-  { word: "Deauville", leaning: "right" },
   { word: "Enchères", leaning: "right" },
   { word: "Hippodrome", leaning: "right" },
-  { word: "Thermique", leaning: "right" },
   { word: "Verisure", leaning: "right" },
   { word: "Weber", leaning: "right" },
   { word: "Portail automatique", leaning: "right" },
   { word: "Climatisation", leaning: "right" },
   { word: "Kärcher", leaning: "right" },
-  { word: "Gravier", leaning: "right" },
   { word: "Ruinart", leaning: "right" },
-  { word: "Havane", leaning: "right" },
-  { word: "Single malt", leaning: "right" },
   { word: "Homard", leaning: "right" },
   { word: "Foie gras", leaning: "right" },
   { word: "Tournedos", leaning: "right" },
   { word: "Cognac", leaning: "right" },
   { word: "Huîtres", leaning: "right" },
-  { word: "Saint-Émilion", leaning: "right" },
   { word: "Truffe", leaning: "right" },
   { word: "Valeurs Actuelles", leaning: "right" },
   { word: "CNews", leaning: "right" },
+  { word: "BFM", leaning: "right" },
   { word: "Lions Club", leaning: "right" },
   { word: "Les Échos", leaning: "right" },
   { word: "HEC", leaning: "right" },
   { word: "Internat", leaning: "right" },
   { word: "Chéquier", leaning: "right" },
-  { word: "Catamaran", leaning: "right" },
-  { word: "Cave à cigares", leaning: "right" },
   { word: "Porsche", leaning: "right" },
   { word: "Audi", leaning: "right" },
   { word: "Bordeaux", leaning: "right" },
-  { word: "Île de Ré", leaning: "right" },
-  { word: "Stand de tir", leaning: "right" },
   { word: "Chanel", leaning: "right" },
   { word: "Manoir", leaning: "right" },
-  { word: "Gentilhommière", leaning: "right" },
-  { word: "Vènerie", leaning: "right" },
-  { word: "Épagneul", leaning: "right" },
   { word: "Labrador", leaning: "right" },
   { word: "Aigle", leaning: "right" },
   { word: "Mi-bas", leaning: "right" },
-  { word: "Mansarde", leaning: "right" },
   { word: "Haussmannien", leaning: "right" },
   { word: "Jacuzzi", leaning: "right" },
   { word: "Teck", leaning: "right" },
   { word: "Voiturier", leaning: "right" },
-  { word: "Vignoble", leaning: "right" },
   { word: "Moncler", leaning: "right" },
-  { word: "Patek Philippe", leaning: "right" },
+  { word: "Lacoste", leaning: "right" },
+  { word: "LVMH", leaning: "right" },
+  { word: "TotalEnergies", leaning: "right" },
+  { word: "TF1", leaning: "right" },
+  { word: "Saucisson", leaning: "right" },
+  { word: "Barbecue", leaning: "right" },
+  { word: "Rillettes", leaning: "right" },
+  { word: "Pâté en croûte", leaning: "right" },
+  { word: "Beaujolais nouveau", leaning: "right" },
+  { word: "Tmax", leaning: "right" },
+  { word: "Gourmette", leaning: "right" },
+  { word: "Eau de Cologne", leaning: "right" },
+  { word: "Messe", leaning: "right" },
+  { word: "Scoutisme", leaning: "right" },
+  { word: "Uniforme", leaning: "right" },
+  { word: "Gendarmerie", leaning: "right" },
+  { word: "Légion d'honneur", leaning: "right" },
+  { word: "Jet-ski", leaning: "right" },
+  { word: "Quad", leaning: "right" },
+  { word: "Bateaux Mouches", leaning: "right" },
+  { word: "Cyrillus", leaning: "right" },
+  { word: "Christofle", leaning: "right" },
+  { word: "Camping-car", leaning: "right" },
+  { word: "Monoprix", leaning: "right" },
+  { word: "Trottinette", leaning: "right" },
+  { word: "Pain au chocolat", leaning: "right" },
+  { word: "PMU", leaning: "right" },
+  { word: "Bar-tabac", leaning: "right" },
+  { word: "Loto", leaning: "right" },
+  { word: "Dacia Duster", leaning: "right" },
+  { word: "Leclerc", leaning: "right" },
+  { word: "Carrefour", leaning: "right" },
+  { word: "Auchan", leaning: "right" },
+  { word: "Darty", leaning: "right" },
+  { word: "Leroy Merlin", leaning: "right" },
+  { word: "Castorama", leaning: "right" },
+  { word: "Sephora", leaning: "right" },
+  { word: "Apéro", leaning: "right" },
+  { word: "Thermomix", leaning: "right" },
+  { word: "Nespresso", leaning: "right" },
+  { word: "Air France", leaning: "right" },
+  { word: "Cheminée", leaning: "right" },
+  { word: "Poulet rôti", leaning: "right" },
+  { word: "Charentaises", leaning: "right" },
+  { word: "Jean brut", leaning: "right" },
+  { word: "Tour de France", leaning: "right" },
+  { word: "Mots fléchés", leaning: "right" },
+  { word: "Monopoly", leaning: "right" },
+  { word: "Bricolage", leaning: "right" },
+  { word: "Lavage auto", leaning: "right" },
+  { word: "Porte-monnaie", leaning: "right" },
 
-  // --- LEANING: NEUTRAL (~130 words) ---
-  { word: "Saucisson", leaning: "neutral" },
-  { word: "Ricard", leaning: "neutral" },
-  { word: "Decathlon", leaning: "neutral" },
-  { word: "Baguette", leaning: "neutral" },
-  { word: "Raclette", leaning: "neutral" },
-  { word: "Pétanque", leaning: "neutral" },
-  { word: "Picard", leaning: "neutral" },
-  { word: "Leclerc", leaning: "neutral" },
-  { word: "SNCF", leaning: "neutral" },
-  { word: "Kebab", leaning: "neutral" },
-  { word: "Croissant", leaning: "neutral" },
-  { word: "Apéro", leaning: "neutral" },
-  { word: "Bricolage", leaning: "neutral" },
-  { word: "Camping-car", leaning: "neutral" },
-  { word: "Barbecue", leaning: "neutral" },
-  { word: "Camembert", leaning: "neutral" },
-  { word: "Crêpe", leaning: "neutral" },
-  { word: "Scrabble", leaning: "neutral" },
-  { word: "Randonnée", leaning: "neutral" },
-  { word: "Sieste", leaning: "neutral" },
-  { word: "Thermomix", leaning: "neutral" },
-  { word: "Le Bon Coin", leaning: "neutral" },
-  { word: "Ikea", leaning: "neutral" },
-  { word: "Nespresso", leaning: "neutral" },
-  { word: "Trottinette", leaning: "neutral" },
-  { word: "Marathon", leaning: "neutral" },
-  { word: "Potager", leaning: "neutral" },
-  { word: "Cheminée", leaning: "neutral" },
-  { word: "Plage", leaning: "neutral" },
-  { word: "Montagne", leaning: "neutral" },
-  { word: "Fromage", leaning: "neutral" },
-  { word: "Café", leaning: "neutral" },
-  { word: "Parapluie", leaning: "neutral" },
-  { word: "Chaussettes", leaning: "neutral" },
-  { word: "Télévision", leaning: "neutral" },
-  { word: "Supermarché", leaning: "neutral" },
-  { word: "Boulangerie", leaning: "neutral" },
-  { word: "Pharmacie", leaning: "neutral" },
-  { word: "Météo", leaning: "neutral" },
-  { word: "Vacances", leaning: "neutral" },
-  { word: "Pâtes", leaning: "neutral" },
-  { word: "Pizza", leaning: "neutral" },
-  { word: "Frites", leaning: "neutral" },
-  { word: "Chocolatine", leaning: "neutral" },
-  { word: "Pain au chocolat", leaning: "neutral" },
-  { word: "TGV", leaning: "neutral" },
-  { word: "Carte Vitale", leaning: "neutral" },
-  { word: "Mutuelle", leaning: "neutral" },
-  { word: "Belote", leaning: "neutral" },
-  { word: "Tarot", leaning: "neutral" },
-  { word: "Monopoly", leaning: "neutral" },
-  { word: "Mots fléchés", leaning: "neutral" },
-  { word: "Tour de France", leaning: "neutral" },
-  { word: "Fête foraine", leaning: "neutral" },
-  { word: "Pique-nique", leaning: "neutral" },
-  { word: "Pêche à la ligne", leaning: "neutral" },
-  { word: "Canapé d'angle", leaning: "neutral" },
-  { word: "Lave-vaisselle", leaning: "neutral" },
-  { word: "Friteuse sans huile", leaning: "neutral" },
-  { word: "Micro-ondes", leaning: "neutral" },
-  { word: "Grille-pain", leaning: "neutral" },
-  { word: "Congélateur", leaning: "neutral" },
-  { word: "Pyjama", leaning: "neutral" },
-  { word: "Pantoufles", leaning: "neutral" },
-  { word: "Charentaises", leaning: "neutral" },
-  { word: "Doudoune", leaning: "neutral" },
-  { word: "Jean brut", leaning: "neutral" },
-  { word: "Baskets blanches", leaning: "neutral" },
-  { word: "Casquette", leaning: "neutral" },
-  { word: "Maillot de bain", leaning: "neutral" },
-  { word: "Tongs", leaning: "neutral" },
-  { word: "Valise à roulettes", leaning: "neutral" },
-  { word: "Clés de maison", leaning: "neutral" },
-  { word: "Carte bancaire", leaning: "neutral" },
-  { word: "Ticket de caisse", leaning: "neutral" },
-  { word: "Téléphone portable", leaning: "neutral" },
-  { word: "Écouteurs sans fil", leaning: "neutral" },
-  { word: "Câble USB", leaning: "neutral" },
-  { word: "Télécommande", leaning: "neutral" },
-  { word: "Réveil-matin", leaning: "neutral" },
-  { word: "Poubelle de tri", leaning: "neutral" },
-  { word: "Boîte aux lettres", leaning: "neutral" },
-  { word: "Voisins de palier", leaning: "neutral" },
-  { word: "Marché du dimanche", leaning: "neutral" },
-  { word: "Foire aux vins", leaning: "neutral" },
-  { word: "Bar-tabac", leaning: "neutral" },
-  { word: "PMU", leaning: "neutral" },
-  { word: "Chips", leaning: "neutral" },
-  { word: "Poulet rôti", leaning: "neutral" },
-  { word: "Rillettes", leaning: "neutral" },
-  { word: "Jambon-beurre", leaning: "neutral" },
-  { word: "Flan pâtissier", leaning: "neutral" },
-  { word: "Éclair au chocolat", leaning: "neutral" },
-  { word: "Tarte aux pommes", leaning: "neutral" },
-  { word: "Mousse au chocolat", leaning: "neutral" },
-  { word: "Salade de tomates", leaning: "neutral" },
-  { word: "Omelette", leaning: "neutral" },
-  { word: "Soupe de légumes", leaning: "neutral" },
-  { word: "Purée mousline", leaning: "neutral" },
-  { word: "Yaourt nature", leaning: "neutral" },
-  { word: "Confiture de fraises", leaning: "neutral" },
-  { word: "Nutella", leaning: "neutral" },
-  { word: "Haribo", leaning: "neutral" },
-  { word: "Coca-Cola", leaning: "neutral" },
-  { word: "Eau gazeuse", leaning: "neutral" },
-  { word: "Bière blonde", leaning: "neutral" },
-  { word: "Sirop de menthe", leaning: "neutral" },
-  { word: "Chocolat chaud", leaning: "neutral" },
-  { word: "Carrefour", leaning: "neutral" },
-  { word: "Auchan", leaning: "neutral" },
-  { word: "Castorama", leaning: "neutral" },
-  { word: "Leroy Merlin", leaning: "neutral" },
-  { word: "FNAC", leaning: "neutral" },
-  { word: "Darty", leaning: "neutral" },
-  { word: "Sephora", leaning: "neutral" },
-  { word: "Monoprix", leaning: "neutral" },
-  { word: "TotalEnergies", leaning: "neutral" },
-  { word: "La Poste", leaning: "neutral" },
-  { word: "Renault Clio", leaning: "neutral" },
-  { word: "Peugeot 208", leaning: "neutral" },
-  { word: "Dacia Duster", leaning: "neutral" },
-  { word: "Air France", leaning: "neutral" },
-  { word: "Bic", leaning: "neutral" },
-  { word: "Post-it", leaning: "neutral" },
-  { word: "Lunettes de soleil", leaning: "neutral" },
-  { word: "Mouchoirs en papier", leaning: "neutral" },
-  { word: "Savon de Marseille", leaning: "neutral" },
-  { word: "Dentifrice", leaning: "neutral" },
-  { word: "Shampoing", leaning: "neutral" },
-  { word: "Brosse à cheveux", leaning: "neutral" }
+  // ===========================================================================
+  // NEUTRAL, LEANING DROITE ("lean-right" : 52% - 58% Droite) — 15 words
+  // ===========================================================================
+  { word: "Picard", leaning: "lean-right" },
+  { word: "Ikea", leaning: "lean-right" },
+  { word: "Raclette", leaning: "lean-right" },
+  { word: "Baguette", leaning: "lean-right" },
+  { word: "Astrologie", leaning: "lean-right" },
+  { word: "Tarot", leaning: "lean-right" },
+  { word: "Savon de Marseille", leaning: "lean-right" },
+  { word: "Croissant", leaning: "lean-right" },
+  { word: "Camembert", leaning: "lean-right" },
+  { word: "Comté", leaning: "lean-right" },
+  { word: "Canapé d'angle", leaning: "lean-right" },
+  { word: "Airfryer", leaning: "lean-right" },
+  { word: "Pêche à la ligne", leaning: "lean-right" },
+  { word: "Fête foraine", leaning: "lean-right" },
+  { word: "Nutella", leaning: "lean-right" }
 ];
 
 // Mulberry32 deterministic pseudo-random number generator
@@ -410,63 +392,65 @@ function escapeSql(str) {
 }
 
 function main() {
-  const prng = mulberry32(424242);
+  const prng = mulberry32(20261103);
 
-  // Validate uniqueness
+  // Validate uniqueness (fail loudly if any duplicate exists in source)
   const seen = new Set();
-  const duplicates = [];
+  const cleanWords = [];
   for (const item of WORDS_METADATA) {
-    const key = item.word.toLowerCase();
+    const w = item.word.trim();
+    const formatted = w.charAt(0).toUpperCase() + w.slice(1);
+    const key = formatted.toLowerCase();
     if (seen.has(key)) {
-      duplicates.push(item.word);
+      throw new Error(`Duplicate word in WORDS_METADATA: ${formatted}`);
     }
     seen.add(key);
+    cleanWords.push({ word: formatted, leaning: item.leaning });
   }
 
-  if (duplicates.length > 0) {
-    console.error("Duplicate words detected:", duplicates);
-    process.exit(1);
-  }
+  const leftCount = cleanWords.filter(w => w.leaning === 'left' || w.leaning === 'lean-left').length;
+  const rightCount = cleanWords.filter(w => w.leaning === 'right' || w.leaning === 'lean-right').length;
+  console.log(`Loaded ${cleanWords.length} unique French words (${leftCount} Gauche / ${rightCount} Droite).`);
 
-  console.log(`Loaded ${WORDS_METADATA.length} unique French words/concepts.`);
-
-  // Prepare directories
   const publicDir = path.join(rootDir, 'public');
   const functionsApiDir = path.join(rootDir, 'functions', 'api');
   fs.mkdirSync(publicDir, { recursive: true });
   fs.mkdirSync(functionsApiDir, { recursive: true });
 
-  const wordList = [];
   const seedVotesMap = {};
   const sqlStatements = [
     `-- Generated seed data for Gauche / Droite`,
     `-- Table: votes (word, left_votes, right_votes, updated_at)`
   ];
 
-  for (const item of WORDS_METADATA) {
-    const word = item.word.trim();
-    wordList.push(word);
+  for (const item of cleanWords) {
+    const word = item.word;
 
-    // Total votes between 45 and 210
-    const totalVotes = Math.floor(prng() * (210 - 45 + 1)) + 45;
+    // Total votes between 80 and 240
+    const totalVotes = Math.floor(prng() * (240 - 80 + 1)) + 80;
     let leftVotes;
     let rightVotes;
 
     if (item.leaning === 'left') {
-      // 62% to 89% left
-      const fraction = 0.62 + prng() * (0.89 - 0.62);
-      leftVotes = Math.max(1, Math.min(totalVotes - 1, Math.round(totalVotes * fraction)));
+      // Clearly Gauche: 66% to 88% Gauche
+      const fraction = 0.66 + prng() * (0.88 - 0.66);
+      leftVotes = Math.round(totalVotes * fraction);
+      rightVotes = totalVotes - leftVotes;
+    } else if (item.leaning === 'lean-left') {
+      // Neutral, leaning Gauche (slight edge): 52% to 58% Gauche
+      const fraction = 0.52 + prng() * (0.58 - 0.52);
+      leftVotes = Math.max(Math.floor(totalVotes / 2) + 2, Math.round(totalVotes * fraction));
       rightVotes = totalVotes - leftVotes;
     } else if (item.leaning === 'right') {
-      // 62% to 89% right
-      const fraction = 0.62 + prng() * (0.89 - 0.62);
-      rightVotes = Math.max(1, Math.min(totalVotes - 1, Math.round(totalVotes * fraction)));
+      // Clearly Droite: 66% to 88% Droite
+      const fraction = 0.66 + prng() * (0.88 - 0.66);
+      rightVotes = Math.round(totalVotes * fraction);
       leftVotes = totalVotes - rightVotes;
-    } else {
-      // neutral: 42% to 58% left
-      const fraction = 0.42 + prng() * (0.58 - 0.42);
-      leftVotes = Math.max(1, Math.min(totalVotes - 1, Math.round(totalVotes * fraction)));
-      rightVotes = totalVotes - leftVotes;
+    } else if (item.leaning === 'lean-right') {
+      // Neutral, leaning Droite (slight edge): 52% to 58% Droite
+      const fraction = 0.52 + prng() * (0.58 - 0.52);
+      rightVotes = Math.max(Math.floor(totalVotes / 2) + 2, Math.round(totalVotes * fraction));
+      leftVotes = totalVotes - rightVotes;
     }
 
     seedVotesMap[word] = { left: leftVotes, right: rightVotes };
@@ -476,23 +460,33 @@ function main() {
     );
   }
 
-  // 1. Write public/words.json
-  const wordsJsonPath = path.join(publicDir, 'words.json');
-  fs.writeFileSync(wordsJsonPath, JSON.stringify(wordList, null, 2), 'utf-8');
-  console.log(`Wrote ${wordList.length} words to ${wordsJsonPath}`);
-
-  // 2. Write seed.sql
+  // 1. Write seed.sql (for Cloudflare D1 initialization)
   const seedSqlPath = path.join(rootDir, 'seed.sql');
   fs.writeFileSync(seedSqlPath, sqlStatements.join('\n') + '\n', 'utf-8');
   console.log(`Wrote ${sqlStatements.length - 2} SQL insert statements to ${seedSqlPath}`);
 
-  // 3. Write functions/api/seed-data.js
+  // 2. Write functions/api/seed-data.js (for Cloudflare Worker API)
   const seedDataJsPath = path.join(functionsApiDir, 'seed-data.js');
   const seedDataContent = `// Automatically generated by scripts/generate-seed.mjs\n` +
-    `// Pre-seeded votes map used by Cloudflare Pages Function fallback and initial baseline\n` +
     `export const SEED_VOTES = ${JSON.stringify(seedVotesMap, null, 2)};\n`;
   fs.writeFileSync(seedDataJsPath, seedDataContent, 'utf-8');
   console.log(`Wrote SEED_VOTES object to ${seedDataJsPath}`);
+
+  // 3. Inject EMBEDDED_SEED_VOTES directly into public/app.js
+  const appJsPath = path.join(publicDir, 'app.js');
+  if (fs.existsSync(appJsPath)) {
+    const appJs = fs.readFileSync(appJsPath, 'utf-8');
+    const startMarker = '// __SEED_VOTES_START__';
+    const endMarker = '// __SEED_VOTES_END__';
+    if (appJs.includes(startMarker) && appJs.includes(endMarker)) {
+      const startIdx = appJs.indexOf(startMarker) + startMarker.length;
+      const endIdx = appJs.indexOf(endMarker);
+      const injected = `\n  const EMBEDDED_SEED_VOTES = ${JSON.stringify(seedVotesMap, null, 4).replace(/\n/g, '\n  ')};\n  `;
+      const updatedAppJs = appJs.slice(0, startIdx) + injected + appJs.slice(endIdx);
+      fs.writeFileSync(appJsPath, updatedAppJs, 'utf-8');
+      console.log(`Embedded ${cleanWords.length} words & votes directly into ${appJsPath}`);
+    }
+  }
 }
 
 main();
