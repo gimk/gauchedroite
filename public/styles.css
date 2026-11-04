@@ -184,6 +184,7 @@ html, body {
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
+  touch-action: none;
 }
 
 .side-panel {
@@ -193,6 +194,7 @@ html, body {
   overflow: hidden;
   cursor: pointer;
   outline: none;
+  -webkit-tap-highlight-color: transparent;
   will-change: width, filter;
   transition: filter var(--transition-quick);
 }
@@ -544,6 +546,11 @@ body.revealed .verdict-banner {
   white-space: nowrap;
 }
 
+.prompt-touch,
+.continue-label-touch {
+  display: none;
+}
+
 body.revealed .prompt-vote,
 body.revealing .prompt-vote {
   opacity: 0;
@@ -580,6 +587,7 @@ body.revealed .prompt-continue {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
   transition: all var(--transition-quick);
   animation: pulseContinue 2.4s infinite ease-in-out;
@@ -737,16 +745,30 @@ body.revealed .side-results {
 }
 
 /* ==========================================================================
-   Responsive Adaptations
+   Touch & Responsive Adaptations
    ========================================================================== */
+@media (hover: none), (pointer: coarse) {
+  .prompt-desktop,
+  .continue-label-desktop,
+  .hint-key,
+  .continue-badge {
+    display: none;
+  }
+
+  .prompt-touch,
+  .continue-label-touch {
+    display: inline;
+  }
+}
+
 @media (max-width: 768px) {
   .masthead {
-    height: 64px;
-    padding: 0 16px;
+    height: 68px;
+    padding: 0 max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left));
   }
 
   .stats-group {
-    gap: 12px;
+    gap: 14px;
   }
 
   .stat-label {
@@ -762,46 +784,54 @@ body.revealed .side-results {
   }
 
   .brand-title {
-    font-size: 0.72rem;
-    letter-spacing: 0.12em;
+    font-size: 0.74rem;
+    letter-spacing: 0.14em;
   }
 
   .brand-tagline {
-    font-size: 0.5rem;
+    font-size: 0.48rem;
   }
 
   .side-content {
-    padding: 72px 18px 40px;
+    padding: 76px 16px calc(44px + env(safe-area-inset-bottom));
   }
 
   .side-voting-hint {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     gap: 6px;
   }
 
-  .hint-key {
+  .hint-key,
+  .continue-badge,
+  .prompt-desktop,
+  .continue-label-desktop {
     display: none;
   }
 
+  .prompt-touch,
+  .continue-label-touch {
+    display: inline;
+  }
+
   .main-word {
-    font-size: clamp(2.4rem, 10vw, 4.2rem);
+    font-size: clamp(2.3rem, 9.5vw, 4rem);
   }
 
   .result-percentage {
-    font-size: clamp(2.4rem, 10vw, 4.4rem);
+    font-size: clamp(2.1rem, 9vw, 4rem);
   }
 
   .result-unit {
-    font-size: clamp(1.4rem, 5.5vw, 2.4rem);
+    font-size: clamp(1.15rem, 4.8vw, 2.2rem);
   }
 
   .result-votes-count {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
   }
 
   .stage-footer {
-    bottom: 20px;
-    width: 90%;
+    bottom: max(18px, calc(12px + env(safe-area-inset-bottom)));
+    width: 92%;
   }
 
   .prompt-vote {
@@ -811,21 +841,202 @@ body.revealed .side-results {
   }
 
   .continue-button {
-    padding: 10px 22px;
-    font-size: 0.8rem;
-  }
-
-  .continue-badge {
-    display: none;
+    padding: 11px 22px;
+    font-size: 0.78rem;
   }
 }
 
-@media (max-width: 480px) {
-  .brand-tagline {
-    display: none;
+@media (max-width: 640px) {
+  /* Two-tier Editorial Masthead keeping all 4 stats visible */
+  .masthead {
+    height: auto;
+    padding: calc(10px + env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) 8px max(12px, env(safe-area-inset-left));
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 8px;
+    column-gap: 10px;
+    align-items: center;
   }
 
-  .stat-item:nth-child(2) {
-    display: none;
+  .brand-pill {
+    position: static;
+    transform: none;
+    grid-column: 1 / -1;
+    justify-self: center;
+    order: -1;
+    padding: 5px 16px;
+  }
+
+  .brand-pill:hover {
+    transform: none;
+  }
+
+  .brand-title {
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    gap: 6px;
+  }
+
+  .brand-tagline {
+    display: block;
+    font-size: 0.46rem;
+    letter-spacing: 0.18em;
+    margin-top: 1px;
+  }
+
+  .stats-group {
+    gap: 12px;
+    padding: 4px 11px;
+    background: rgba(18, 18, 20, 0.36);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(247, 243, 235, 0.15);
+    border-radius: 999px;
+  }
+
+  .stats-left {
+    justify-self: start;
+  }
+
+  .stats-right {
+    justify-self: end;
+  }
+
+  .stat-item,
+  .stats-right .stat-item {
+    align-items: center;
+  }
+
+  .stat-label {
+    font-size: 0.48rem;
+    letter-spacing: 0.11em;
+  }
+
+  .stat-value {
+    font-size: 0.86rem;
+  }
+
+  /* Vertical Editorial Spine Watermarks (No horizontal clipping) */
+  .side-watermark {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-size: clamp(2.4rem, 10vw, 3.6rem);
+    letter-spacing: 0.18em;
+    top: 52%;
+  }
+
+  .side-left .side-watermark {
+    left: 8px;
+    transform: translateY(-50%) rotate(180deg);
+  }
+
+  .side-right .side-watermark {
+    right: 8px;
+    transform: translateY(-50%);
+  }
+
+  body.hover-left .side-left .side-watermark {
+    transform: translateY(-50%) rotate(180deg) scale(1.03);
+  }
+
+  body.hover-right .side-right .side-watermark {
+    transform: translateY(-50%) scale(1.03);
+  }
+
+  /* Tactile Side Voting Hints */
+  .side-content {
+    padding: 108px 12px calc(54px + env(safe-area-inset-bottom));
+  }
+
+  .side-voting-hint {
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    gap: 5px;
+    padding: 6px 11px;
+    border-radius: 999px;
+    background: rgba(18, 18, 20, 0.28);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid var(--color-cream-hairline);
+    margin-bottom: 10px;
+  }
+
+  .hint-arrow {
+    font-size: 0.95rem;
+  }
+
+  /* Center Stage & Verdict Spacing */
+  .center-stage {
+    padding: 0 14px;
+    top: 51%;
+  }
+
+  body.revealing .center-stage,
+  body.revealed .center-stage {
+    top: 34%;
+  }
+
+  .word-meta {
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    margin-bottom: 4px;
+  }
+
+  .main-word {
+    font-size: clamp(2.15rem, 9.2vw, 3.4rem);
+    max-width: 92vw;
+  }
+
+  .verdict-banner {
+    margin-top: 14px;
+  }
+
+  .verdict-pill {
+    padding: 7px 16px;
+    font-size: 0.72rem;
+    letter-spacing: 0.11em;
+    gap: 7px;
+  }
+
+  /* Anti-Clipping Narrow Hemisphere Results */
+  .side-results {
+    top: 64%;
+    width: 100%;
+    max-width: 100%;
+    padding: 0 6px;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .result-percentage {
+    font-size: clamp(1.8rem, 8vw, 2.9rem);
+  }
+
+  .result-unit {
+    font-size: clamp(0.95rem, 4.2vw, 1.5rem);
+    margin-left: 1px;
+  }
+
+  .result-votes-count {
+    font-size: 0.64rem;
+    letter-spacing: 0.07em;
+    margin-top: 6px;
+    white-space: nowrap;
+  }
+
+  .user-choice-badge {
+    margin-top: 10px;
+    padding: 4px 9px;
+    font-size: 0.56rem;
+    letter-spacing: 0.08em;
+    gap: 5px;
+    max-width: calc(100% - 6px);
+    white-space: nowrap;
+  }
+
+  .badge-dot {
+    width: 5px;
+    height: 5px;
+    flex-shrink: 0;
   }
 }

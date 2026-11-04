@@ -1410,6 +1410,7 @@
   // DOM Elements Cache
   const DOM = {
     body: document.body,
+    viewport: document.getElementById('viewport'),
     panelLeft: document.getElementById('panel-left'),
     panelRight: document.getElementById('panel-right'),
     mainWord: document.getElementById('main-word'),
@@ -1431,7 +1432,7 @@
   };
 
   // ============================================================================
-  // Magnetic Hover Physics (Spring Lerp Loop)
+  // Magnetic Hover & Touch Drag Physics (Spring Lerp Loop)
   // ============================================================================
   const spring = {
     pullX: 0,
@@ -1444,8 +1445,35 @@
     targetSplit: 50
   };
 
+  const touchState = {
+    active: false,
+    moved: false,
+    startX: 0,
+    startY: 0,
+    currentX: 0,
+    currentY: 0,
+    startTime: 0,
+    lastEndTime: 0
+  };
+
+  let lastRevealedLeftPct = 50;
+
+  function canUseHoverPhysics() {
+    if (touchState.active || Date.now() - touchState.lastEndTime < 600) {
+      return false;
+    }
+    return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  }
+
+  function resetSpringTargets() {
+    spring.targetPullX = 0;
+    spring.targetPullY = 0;
+    spring.targetRot = 0;
+    spring.targetSplit = 50;
+  }
+
   function onMouseMove(e) {
-    if (currentState !== STATES.VOTING) return;
+    if (currentState !== STATES.VOTING || !canUseHoverPhysics()) return;
 
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -1475,10 +1503,91 @@
   function onMouseLeave() {
     DOM.body.classList.remove('hover-left', 'hover-right');
     if (currentState === STATES.VOTING) {
-      spring.targetPullX = 0;
-      spring.targetPullY = 0;
-      spring.targetRot = 0;
-      spring.targetSplit = 50;
+      resetSpringTargets();
+    }
+  }
+
+  function onTouchStart(e) {
+    if (e.touches.length !== 1) return;
+    const touch = e.touches[0];
+    touchState.active = true;
+    touchState.moved = false;
+    touchState.startX = touch.clientX;
+    touchState.startY = touch.clientY;
+    touchState.currentX = touch.clientX;
+    touchState.currentY = touch.clientY;
+    touchState.startTime = Date.now();
+  }
+
+  function onTouchMove(e) {
+    if (!touchState.active || e.touches.length !== 1) return;
+    const touch = e.touches[0];
+    touchState.currentX = touch.clientX;
+    touchState.currentY = touch.clientY;
+
+    const dx = touch.clientX - touchState.startX;
+    const dy = touch.clientY - touchState.startY;
+
+    if (Math.hypot(dx, dy) > 8) {
+      touchState.moved = true;
+    }
+
+    if (currentState !== STATES.VOTING) return;
+
+    const dragRange = Math.max(90, window.innerWidth * 0.34);
+    const progress = Math.min(1, Math.abs(dx) / dragRange);
+
+    if (dx < -6) {
+      DOM.body.classList.add('hover-left');
+      DOM.body.classList.remove('hover-right');
+
+      spring.targetPullX = -46 * Math.pow(progress, 0.85);
+      spring.targetPullY = Math.max(-18, Math.min(18, dy * 0.1));
+      spring.targetRot = -2.4 * progress;
+      spring.targetSplit = 50 + (6.5 * progress);
+    } else if (dx > 6) {
+      DOM.body.classList.add('hover-right');
+      DOM.body.classList.remove('hover-left');
+
+      spring.targetPullX = 46 * Math.pow(progress, 0.85);
+      spring.targetPullY = Math.max(-18, Math.min(18, dy * 0.1));
+      spring.targetRot = 2.4 * progress;
+      spring.targetSplit = 50 - (6.5 * progress);
+    } else {
+      DOM.body.classList.remove('hover-left', 'hover-right');
+      resetSpringTargets();
+    }
+  }
+
+  function onTouchEnd() {
+    if (!touchState.active) return;
+    touchState.active = false;
+    touchState.lastEndTime = Date.now();
+    DOM.body.classList.remove('hover-left', 'hover-right');
+
+    const dx = touchState.currentX - touchState.startX;
+    const dt = Math.max(1, Date.now() - touchState.startTime);
+    const velocityX = Math.abs(dx) / dt;
+
+    if (currentState === STATES.VOTING && touchState.moved) {
+      const isSwipeCommit = Math.abs(dx) > 44 || (Math.abs(dx) > 22 && velocityX > 0.42);
+      if (isSwipeCommit) {
+        handleVote(dx < 0 ? 'left' : 'right');
+      } else {
+        resetSpringTargets();
+      }
+    } else if (currentState === STATES.REVEALED && touchState.moved && Math.abs(dx) > 40) {
+      advanceToNextWord();
+    }
+  }
+
+  function onTouchCancel() {
+    touchState.active = false;
+    touchState.moved = false;
+    touchState.lastEndTime = Date.now();
+    DOM.body.classList.remove('hover-left', 'hover-right');
+    if (currentState === STATES.VOTING) {
+      resetSpringTargets();
     }
   }
 
@@ -1653,10 +1762,17 @@
     };
   }
 
+  function applyRevealedSplit(leftPct) {
+    const minClamp = window.innerWidth < 480 ? 28 : (window.innerWidth < 768 ? 24 : 18);
+    const clampedSplit = Math.max(minClamp, Math.min(100 - minClamp, leftPct));
+    document.documentElement.style.setProperty('--split-pos', `${clampedSplit}%`);
+  }
+
   function processVerdictAndReveal(data) {
     const leftPct = data.leftPercent;
     const rightPct = data.rightPercent;
     const isWinner = Boolean(data.won);
+    lastRevealedLeftPct = leftPct;
 
     // Update Player Stats
     stats.totalPlayed++;
@@ -1677,9 +1793,7 @@
     saveStats();
 
     // Clamp split boundary visually so both side numbers remain readable
-    const minClamp = window.innerWidth < 640 ? 24 : 18;
-    const clampedSplit = Math.max(minClamp, Math.min(100 - minClamp, leftPct));
-    document.documentElement.style.setProperty('--split-pos', `${clampedSplit}%`);
+    applyRevealedSplit(leftPct);
 
     // Configure Verdict Banner
     DOM.verdictPill.classList.toggle('is-winner', isWinner);
@@ -1768,7 +1882,21 @@
     window.addEventListener('mousemove', onMouseMove, { passive: true });
     document.addEventListener('mouseleave', onMouseLeave, { passive: true });
 
+    if (DOM.viewport) {
+      DOM.viewport.addEventListener('touchstart', onTouchStart, { passive: true });
+      DOM.viewport.addEventListener('touchmove', onTouchMove, { passive: true });
+      DOM.viewport.addEventListener('touchend', onTouchEnd, { passive: true });
+      DOM.viewport.addEventListener('touchcancel', onTouchCancel, { passive: true });
+    }
+
+    window.addEventListener('resize', () => {
+      if (currentState === STATES.REVEALED) {
+        applyRevealedSplit(lastRevealedLeftPct);
+      }
+    }, { passive: true });
+
     DOM.panelLeft.addEventListener('click', (e) => {
+      if (touchState.moved && Date.now() - touchState.lastEndTime < 450) return;
       if (currentState === STATES.VOTING) {
         e.preventDefault();
         handleVote('left');
@@ -1776,6 +1904,7 @@
     });
 
     DOM.panelRight.addEventListener('click', (e) => {
+      if (touchState.moved && Date.now() - touchState.lastEndTime < 450) return;
       if (currentState === STATES.VOTING) {
         e.preventDefault();
         handleVote('right');
@@ -1788,6 +1917,7 @@
     });
 
     window.addEventListener('click', () => {
+      if (touchState.moved && Date.now() - touchState.lastEndTime < 450) return;
       if (currentState === STATES.REVEALED) {
         advanceToNextWord();
       }
