@@ -456,7 +456,7 @@ function main() {
     seedVotesMap[word] = { left: leftVotes, right: rightVotes };
 
     sqlStatements.push(
-      `INSERT OR REPLACE INTO votes (word, left_votes, right_votes) VALUES ('${escapeSql(word)}', ${leftVotes}, ${rightVotes});`
+      `INSERT OR IGNORE INTO votes (word, left_votes, right_votes) VALUES ('${escapeSql(word)}', ${leftVotes}, ${rightVotes});`
     );
   }
 
