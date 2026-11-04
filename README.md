@@ -8,7 +8,7 @@
 ## 🏗️ Architecture & Fonctionnement
 
 - **Frontend Autonome** : Application web statique dans `public/` (`index.html`, `styles.css`, `app.js`). Peut être ouverte directement en double-cliquant sur `public/index.html` (`file://`) sans serveur grâce aux données de base embarquées dans `app.js`.
-- **Backend Serverless (Cloudflare Pages)** : Cloudflare Pages Functions (`functions/api/vote.js`).
+- **Backend Serverless (Cloudflare Workers)** : Worker (`src/worker.js`) qui sert `/api/vote` (`src/vote.js`) et les fichiers statiques de `public/`.
 - **Base de données SQL** : Cloudflare D1 (`votes` table dans SQLite distribué).
 - **Fallback Automatique** : Si ouvert en local (`file://`) ou si D1 n'est pas encore configuré, les 340 mots et leurs votes initiaux prennent le relais automatiquement.
 
@@ -17,10 +17,10 @@
 ## 📦 Structure des Fichiers
 
 ```text
-├── functions/
-│   └── api/
-│       ├── seed-data.js        # Données de votes pré-calculées (340 mots) pour le Worker
-│       └── vote.js             # Pages Function API (POST, GET, OPTIONS)
+├── src/
+│   ├── worker.js               # Point d'entrée du Worker (route /api/vote + fichiers statiques)
+│   ├── seed-data.js            # Données de votes pré-calculées (340 mots) pour le Worker
+│   └── vote.js                 # Handlers API (POST, GET, OPTIONS)
 ├── public/
 │   ├── index.html              # Interface minimaliste (ouvrable directement en local)
 │   ├── styles.css              # Design éditorial & animations
@@ -30,7 +30,7 @@
 │   └── generate-seed.mjs       # Générateur déterministe (PRNG) des données
 ├── schema.sql                  # Schéma de la table SQLite D1
 ├── seed.sql                    # Requêtes INSERT SQL des votes initiaux
-├── wrangler.toml               # Configuration Cloudflare Pages & binding D1
+├── wrangler.toml               # Configuration Cloudflare Worker, assets & binding D1
 └── package.json                # Scripts npm
 ```
 
@@ -52,7 +52,7 @@ npm run generate-seed
 ```
 Ce script met à jour simultanément :
 1. `public/app.js` (`EMBEDDED_SEED_VOTES`) pour le fonctionnement autonome côté client.
-2. `functions/api/seed-data.js` pour le Worker Cloudflare.
+2. `src/seed-data.js` pour le Worker Cloudflare.
 3. `seed.sql` pour la base de données Cloudflare D1.
 
 ---
@@ -127,11 +127,11 @@ GET /api/vote?word=Biocoop
 - Node.js (version 18+)
 - Wrangler CLI (`npm install`)
 
-### 1. Lancer le serveur de développement Pages
+### 1. Lancer le serveur de développement Worker
 ```bash
 npm run dev
 ```
-Par défaut, Pages Functions fonctionne avec le fallback mémoire si D1 n'est pas configuré.
+Par défaut, le Worker fonctionne avec le fallback mémoire si D1 n'est pas configuré.
 
 ### 2. Initialiser D1 en local (Optionnel)
 Pour tester avec une base SQLite D1 locale gérée par Wrangler :
@@ -145,7 +145,7 @@ npm run d1:seed
 
 ---
 
-## 🚀 Déploiement sur Cloudflare Pages & D1
+## 🚀 Déploiement sur Cloudflare Workers & D1
 
 ### Étape 1 : Créer la base de données D1 sur Cloudflare
 ```bash
@@ -168,8 +168,8 @@ npx wrangler d1 execute leftright-db --remote --file=./schema.sql
 npx wrangler d1 execute leftright-db --remote --file=./seed.sql
 ```
 
-### Étape 4 : Déployer l'application sur Cloudflare Pages
+### Étape 4 : Déployer l'application sur Cloudflare Workers
 ```bash
 npm run deploy
 ```
-*Note : Dans le tableau de bord Cloudflare Pages > Paramètres > Fonctions > Liaisons de base de données D1, assurez-vous que la variable `DB` est bien liée à `leftright-db`.*
+*Note : le binding `DB` est déclaré dans `wrangler.toml` et appliqué automatiquement au déploiement. En déploiement Git (Workers Builds), la commande de déploiement est `npx wrangler deploy`.*

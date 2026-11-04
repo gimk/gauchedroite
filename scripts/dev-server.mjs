@@ -1,10 +1,10 @@
 // scripts/dev-server.mjs
-// Lightweight zero-dependency local dev server that emulates Cloudflare Pages + Pages Functions (/api/vote)
+// Lightweight zero-dependency local dev server that emulates the Cloudflare Worker (/api/vote + static files)
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { onRequestGet, onRequestPost, onRequestOptions } from '../functions/api/vote.js';
+import { onRequestGet, onRequestPost, onRequestOptions } from '../src/vote.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const publicDir = path.resolve(__dirname, '..', 'public');
@@ -23,7 +23,7 @@ const MIME_TYPES = {
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || `localhost:${PORT}`}`);
 
-  // Route /api/vote to Cloudflare Pages Function handler
+  // Route /api/vote to Cloudflare Worker handler
   if (url.pathname === '/api/vote') {
     try {
       const chunks = [];
