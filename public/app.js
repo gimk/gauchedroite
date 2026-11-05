@@ -3140,6 +3140,10 @@
   async function handleVote(side) {
     if (currentState !== STATES.VOTING) return;
 
+    if (document.activeElement && document.activeElement.blur) {
+      document.activeElement.blur();
+    }
+
     currentState = STATES.REVEALING;
     revealTimestamp = Date.now();
     DOM.body.classList.remove('hover-left', 'hover-right');
@@ -3283,6 +3287,10 @@
   function advanceToNextWord() {
     if (currentState !== STATES.REVEALED) return;
     if (Date.now() - revealTimestamp < ADVANCE_GUARD_DELAY_MS) return;
+
+    if (document.activeElement && document.activeElement.blur) {
+      document.activeElement.blur();
+    }
 
     currentState = STATES.REVEALING;
     touchState.active = false;

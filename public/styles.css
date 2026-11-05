@@ -199,8 +199,11 @@ html, body {
   transition: filter var(--transition-quick);
 }
 
-.side-panel:focus-visible {
-  box-shadow: inset 0 0 0 3px rgba(247, 243, 235, 0.4);
+.side-panel:focus,
+.side-panel:focus-visible,
+.side-panel:active {
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 /* Left Hemisphere (Gauche) */
