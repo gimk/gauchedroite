@@ -10,7 +10,7 @@
 - **Frontend Autonome** : Application web statique dans `public/` (`index.html`, `styles.css`, `app.js`). Peut être ouverte directement en double-cliquant sur `public/index.html` (`file://`) sans serveur grâce aux données de base embarquées dans `app.js`.
 - **Backend Serverless (Cloudflare Workers)** : Worker (`src/worker.js`) qui sert `/api/vote` (`src/vote.js`) et les fichiers statiques de `public/`.
 - **Base de données SQL** : Cloudflare D1 (`votes` table dans SQLite distribué).
-- **Fallback Automatique** : Si ouvert en local (`file://`) ou si D1 n'est pas encore configuré, les 340 mots et leurs votes initiaux prennent le relais automatiquement.
+- **Fallback Automatique** : Si ouvert en local (`file://`) ou si D1 n'est pas encore configuré, les 700 mots et leurs votes initiaux prennent le relais automatiquement.
 
 ---
 
@@ -19,12 +19,12 @@
 ```text
 ├── src/
 │   ├── worker.js               # Point d'entrée du Worker (route /api/vote + fichiers statiques)
-│   ├── seed-data.js            # Données de votes pré-calculées (340 mots) pour le Worker
+│   ├── seed-data.js            # Données de votes pré-calculées (700 mots) pour le Worker
 │   └── vote.js                 # Handlers API (POST, GET, OPTIONS)
 ├── public/
 │   ├── index.html              # Interface minimaliste (ouvrable directement en local)
 │   ├── styles.css              # Design éditorial & animations
-│   └── app.js                  # Moteur physique, logique de jeu & 340 mots embarqués
+│   └── app.js                  # Moteur physique, logique de jeu & 700 mots embarqués
 ├── scripts/
 │   ├── dev-server.mjs          # Serveur local Node sans dépendance (optionnel)
 │   └── generate-seed.mjs       # Générateur déterministe (PRNG) des données
@@ -38,7 +38,7 @@
 
 ## 🎲 Données & Génération des Mots
 
-Le script `scripts/generate-seed.mjs` contient **340 mots courants et marques en France** équilibrés à **50 / 50** (**170 Gauche / 170 Droite**) :
+Le script `scripts/generate-seed.mjs` contient **700 mots courants et marques en France** équilibrés à **50 / 50** (**350 Gauche / 350 Droite**) :
 - **Gauche franche (`left`)** : 66% à 88% Gauche (*Quinoa, Vélo cargo, Biocoop, Sarouel, Kombucha, Arte, Totebag, Ricard, SNCF...*)
 - **Neutre tendance Gauche (`lean-left`)** : 52% à 58% Gauche (*Le Bon Coin, Boulangerie, Pâtes, Scrabble, Cantine...*)
 - **Droite franche (`right`)** : 66% à 88% Droite (*SUV, Golf, Rolex, Chasse, Côte de bœuf, Mocassins, Le Figaro, Champagne, Saucisson...*)

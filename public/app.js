@@ -1370,6 +1370,1446 @@
       "Nutella": {
           "left": 72,
           "right": 85
+      },
+      "Escalade": {
+          "left": 127,
+          "right": 49
+      },
+      "Gravel": {
+          "left": 120,
+          "right": 28
+      },
+      "Tempeh": {
+          "left": 131,
+          "right": 20
+      },
+      "Ghee": {
+          "left": 114,
+          "right": 27
+      },
+      "Tahini": {
+          "left": 89,
+          "right": 29
+      },
+      "Miso": {
+          "left": 108,
+          "right": 17
+      },
+      "Kimchi": {
+          "left": 156,
+          "right": 33
+      },
+      "Dahl": {
+          "left": 135,
+          "right": 51
+      },
+      "Chai latte": {
+          "left": 57,
+          "right": 23
+      },
+      "Eau de bouleau": {
+          "left": 90,
+          "right": 16
+      },
+      "Lait de soja": {
+          "left": 63,
+          "right": 28
+      },
+      "Lait d'amande": {
+          "left": 72,
+          "right": 20
+      },
+      "Sucre de coco": {
+          "left": 189,
+          "right": 31
+      },
+      "Sirop d'agave": {
+          "left": 108,
+          "right": 19
+      },
+      "Levure maltée": {
+          "left": 189,
+          "right": 45
+      },
+      "Graines de courge": {
+          "left": 110,
+          "right": 51
+      },
+      "Graines de lin": {
+          "left": 70,
+          "right": 34
+      },
+      "Baies de goji": {
+          "left": 177,
+          "right": 55
+      },
+      "Açaï": {
+          "left": 100,
+          "right": 34
+      },
+      "Guarana": {
+          "left": 72,
+          "right": 23
+      },
+      "Ginseng": {
+          "left": 101,
+          "right": 41
+      },
+      "Rooibos": {
+          "left": 160,
+          "right": 25
+      },
+      "Tisane": {
+          "left": 71,
+          "right": 33
+      },
+      "Verveine": {
+          "left": 134,
+          "right": 56
+      },
+      "Camomille": {
+          "left": 118,
+          "right": 39
+      },
+      "Soupe d'ortie": {
+          "left": 104,
+          "right": 16
+      },
+      "Ail des ours": {
+          "left": 96,
+          "right": 43
+      },
+      "Panais": {
+          "left": 160,
+          "right": 34
+      },
+      "Rutabaga": {
+          "left": 141,
+          "right": 24
+      },
+      "Chou kale": {
+          "left": 170,
+          "right": 40
+      },
+      "Patate douce": {
+          "left": 101,
+          "right": 15
+      },
+      "Butternut": {
+          "left": 136,
+          "right": 53
+      },
+      "Potimarron": {
+          "left": 113,
+          "right": 29
+      },
+      "Betterave": {
+          "left": 147,
+          "right": 22
+      },
+      "Lentilles corail": {
+          "left": 155,
+          "right": 31
+      },
+      "Boulgour": {
+          "left": 85,
+          "right": 22
+      },
+      "Épeautre": {
+          "left": 100,
+          "right": 38
+      },
+      "Petit épeautre": {
+          "left": 121,
+          "right": 39
+      },
+      "Flocons d'avoine": {
+          "left": 133,
+          "right": 24
+      },
+      "Porridge": {
+          "left": 191,
+          "right": 31
+      },
+      "Granola": {
+          "left": 136,
+          "right": 33
+      },
+      "Muesli": {
+          "left": 172,
+          "right": 37
+      },
+      "Gomasio": {
+          "left": 75,
+          "right": 13
+      },
+      "Tamari": {
+          "left": 171,
+          "right": 69
+      },
+      "Fenugrec": {
+          "left": 132,
+          "right": 52
+      },
+      "Cardamome": {
+          "left": 56,
+          "right": 27
+      },
+      "Coriandre": {
+          "left": 120,
+          "right": 26
+      },
+      "Cumin": {
+          "left": 170,
+          "right": 36
+      },
+      "Zaatar": {
+          "left": 96,
+          "right": 18
+      },
+      "Sumac": {
+          "left": 181,
+          "right": 57
+      },
+      "Feta": {
+          "left": 137,
+          "right": 23
+      },
+      "Halloumi": {
+          "left": 160,
+          "right": 53
+      },
+      "Tzatziki": {
+          "left": 126,
+          "right": 52
+      },
+      "Caviar d'aubergine": {
+          "left": 110,
+          "right": 27
+      },
+      "Chakchouka": {
+          "left": 147,
+          "right": 25
+      },
+      "Ramen": {
+          "left": 126,
+          "right": 38
+      },
+      "Pho": {
+          "left": 75,
+          "right": 23
+      },
+      "Bo bun": {
+          "left": 188,
+          "right": 50
+      },
+      "Pad thaï": {
+          "left": 103,
+          "right": 44
+      },
+      "Banh mi": {
+          "left": 73,
+          "right": 23
+      },
+      "Samoussa": {
+          "left": 141,
+          "right": 57
+      },
+      "Naan": {
+          "left": 64,
+          "right": 17
+      },
+      "Pakora": {
+          "left": 127,
+          "right": 34
+      },
+      "Mafé": {
+          "left": 81,
+          "right": 31
+      },
+      "Yassa": {
+          "left": 88,
+          "right": 42
+      },
+      "Thiéboudienne": {
+          "left": 148,
+          "right": 59
+      },
+      "Accras": {
+          "left": 130,
+          "right": 34
+      },
+      "Ceviche": {
+          "left": 122,
+          "right": 52
+      },
+      "Guacamole": {
+          "left": 140,
+          "right": 35
+      },
+      "Gaspacho": {
+          "left": 156,
+          "right": 44
+      },
+      "Pesto": {
+          "left": 130,
+          "right": 31
+      },
+      "Focaccia": {
+          "left": 59,
+          "right": 25
+      },
+      "Houblon": {
+          "left": 159,
+          "right": 74
+      },
+      "IPA": {
+          "left": 195,
+          "right": 41
+      },
+      "Microbrasserie": {
+          "left": 83,
+          "right": 29
+      },
+      "Pétillant naturel": {
+          "left": 165,
+          "right": 43
+      },
+      "Vin orange": {
+          "left": 88,
+          "right": 17
+      },
+      "Génépi": {
+          "left": 65,
+          "right": 23
+      },
+      "Chartreuse": {
+          "left": 130,
+          "right": 61
+      },
+      "Pastis": {
+          "left": 150,
+          "right": 23
+      },
+      "Dr. Martens": {
+          "left": 137,
+          "right": 38
+      },
+      "Converse": {
+          "left": 62,
+          "right": 27
+      },
+      "Vans": {
+          "left": 100,
+          "right": 18
+      },
+      "Clarks": {
+          "left": 97,
+          "right": 44
+      },
+      "Blundstone": {
+          "left": 82,
+          "right": 31
+      },
+      "Salopette": {
+          "left": 90,
+          "right": 31
+      },
+      "Banane": {
+          "left": 63,
+          "right": 30
+      },
+      "Bob": {
+          "left": 65,
+          "right": 16
+      },
+      "Bonnet Docker": {
+          "left": 130,
+          "right": 33
+      },
+      "Mulet": {
+          "left": 125,
+          "right": 52
+      },
+      "Moustache": {
+          "left": 161,
+          "right": 75
+      },
+      "Piercing": {
+          "left": 159,
+          "right": 44
+      },
+      "Septum": {
+          "left": 84,
+          "right": 27
+      },
+      "Écarteur": {
+          "left": 186,
+          "right": 36
+      },
+      "Polaire": {
+          "left": 106,
+          "right": 27
+      },
+      "Patagonia": {
+          "left": 70,
+          "right": 26
+      },
+      "Carhartt": {
+          "left": 167,
+          "right": 43
+      },
+      "Freitag": {
+          "left": 201,
+          "right": 32
+      },
+      "Eastpak": {
+          "left": 88,
+          "right": 35
+      },
+      "K-Way": {
+          "left": 162,
+          "right": 71
+      },
+      "Marinière": {
+          "left": 163,
+          "right": 51
+      },
+      "Veste en jean": {
+          "left": 179,
+          "right": 40
+      },
+      "Cheveux bleus": {
+          "left": 119,
+          "right": 26
+      },
+      "Frange courte": {
+          "left": 74,
+          "right": 20
+      },
+      "Lunettes rondes": {
+          "left": 101,
+          "right": 47
+      },
+      "Chaussettes en laine": {
+          "left": 58,
+          "right": 26
+      },
+      "Tricot": {
+          "left": 70,
+          "right": 34
+      },
+      "Crochet": {
+          "left": 87,
+          "right": 14
+      },
+      "Machine à coudre": {
+          "left": 124,
+          "right": 32
+      },
+      "Sérigraphie": {
+          "left": 81,
+          "right": 13
+      },
+      "Linogravure": {
+          "left": 81,
+          "right": 16
+      },
+      "Argentique": {
+          "left": 65,
+          "right": 26
+      },
+      "Fanzine": {
+          "left": 174,
+          "right": 35
+      },
+      "Bande dessinée": {
+          "left": 142,
+          "right": 23
+      },
+      "Manga": {
+          "left": 79,
+          "right": 38
+      },
+      "Poésie": {
+          "left": 69,
+          "right": 14
+      },
+      "Philosophie": {
+          "left": 158,
+          "right": 79
+      },
+      "Anthropologie": {
+          "left": 118,
+          "right": 48
+      },
+      "Psychanalyse": {
+          "left": 92,
+          "right": 45
+      },
+      "Éducation populaire": {
+          "left": 174,
+          "right": 42
+      },
+      "BAFA": {
+          "left": 89,
+          "right": 38
+      },
+      "Colonie de vacances": {
+          "left": 196,
+          "right": 28
+      },
+      "Centre aéré": {
+          "left": 69,
+          "right": 30
+      },
+      "Périscolaire": {
+          "left": 73,
+          "right": 23
+      },
+      "ATSEM": {
+          "left": 70,
+          "right": 34
+      },
+      "Orthophoniste": {
+          "left": 116,
+          "right": 33
+      },
+      "Assistant social": {
+          "left": 124,
+          "right": 20
+      },
+      "Éducateur spécialisé": {
+          "left": 111,
+          "right": 41
+      },
+      "Infirmier": {
+          "left": 117,
+          "right": 39
+      },
+      "Sage-femme": {
+          "left": 139,
+          "right": 64
+      },
+      "Ostéopathe": {
+          "left": 166,
+          "right": 70
+      },
+      "Acupuncture": {
+          "left": 170,
+          "right": 64
+      },
+      "Naturopathie": {
+          "left": 89,
+          "right": 32
+      },
+      "Homéopathie": {
+          "left": 145,
+          "right": 42
+      },
+      "Herboristerie": {
+          "left": 76,
+          "right": 21
+      },
+      "Fleurs de Bach": {
+          "left": 162,
+          "right": 69
+      },
+      "Ayurvéda": {
+          "left": 161,
+          "right": 24
+      },
+      "Shiatsu": {
+          "left": 80,
+          "right": 17
+      },
+      "Reiki": {
+          "left": 133,
+          "right": 33
+      },
+      "Tai-chi": {
+          "left": 125,
+          "right": 51
+      },
+      "Qi gong": {
+          "left": 108,
+          "right": 50
+      },
+      "Pilates": {
+          "left": 153,
+          "right": 50
+      },
+      "Capoeira": {
+          "left": 95,
+          "right": 34
+      },
+      "Cirque": {
+          "left": 143,
+          "right": 62
+      },
+      "Jonglage": {
+          "left": 120,
+          "right": 47
+      },
+      "Diabolo": {
+          "left": 116,
+          "right": 50
+      },
+      "Monocycle": {
+          "left": 90,
+          "right": 17
+      },
+      "Roller": {
+          "left": 119,
+          "right": 21
+      },
+      "Skateboard": {
+          "left": 179,
+          "right": 37
+      },
+      "Longboard": {
+          "left": 104,
+          "right": 35
+      },
+      "Surf": {
+          "left": 100,
+          "right": 17
+      },
+      "Kayak": {
+          "left": 182,
+          "right": 30
+      },
+      "Canoë": {
+          "left": 94,
+          "right": 43
+      },
+      "Bivouac": {
+          "left": 129,
+          "right": 43
+      },
+      "Hamac": {
+          "left": 175,
+          "right": 39
+      },
+      "Tente": {
+          "left": 107,
+          "right": 16
+      },
+      "Duvet": {
+          "left": 95,
+          "right": 29
+      },
+      "Réchaud": {
+          "left": 160,
+          "right": 46
+      },
+      "Gourde": {
+          "left": 161,
+          "right": 29
+      },
+      "Thermos": {
+          "left": 100,
+          "right": 52
+      },
+      "Fromager": {
+          "left": 111,
+          "right": 92
+      },
+      "Caviste": {
+          "left": 53,
+          "right": 46
+      },
+      "Linux": {
+          "left": 86,
+          "right": 67
+      },
+      "Téléphone fixe": {
+          "left": 102,
+          "right": 91
+      },
+      "Jeûne intermittent": {
+          "left": 103,
+          "right": 90
+      },
+      "Marché couvert": {
+          "left": 54,
+          "right": 39
+      },
+      "Primeur": {
+          "left": 68,
+          "right": 51
+      },
+      "Herbes de Provence": {
+          "left": 112,
+          "right": 98
+      },
+      "Huile d'olive": {
+          "left": 118,
+          "right": 92
+      },
+      "Vinaigre balsamique": {
+          "left": 107,
+          "right": 86
+      },
+      "Moutarde": {
+          "left": 77,
+          "right": 57
+      },
+      "Cornichon": {
+          "left": 73,
+          "right": 62
+      },
+      "Ratatouille": {
+          "left": 107,
+          "right": 95
+      },
+      "Soupe": {
+          "left": 58,
+          "right": 53
+      },
+      "Quiche": {
+          "left": 58,
+          "right": 44
+      },
+      "Croque-monsieur": {
+          "left": 131,
+          "right": 108
+      },
+      "Galette des rois": {
+          "left": 97,
+          "right": 81
+      },
+      "Compote": {
+          "left": 116,
+          "right": 88
+      },
+      "Clafoutis": {
+          "left": 83,
+          "right": 75
+      },
+      "Mousse au chocolat": {
+          "left": 97,
+          "right": 87
+      },
+      "ChatGPT": {
+          "left": 35,
+          "right": 148
+      },
+      "LinkedIn": {
+          "left": 39,
+          "right": 132
+      },
+      "Business Angel": {
+          "left": 40,
+          "right": 81
+      },
+      "Incubateur": {
+          "left": 40,
+          "right": 132
+      },
+      "Coworking": {
+          "left": 59,
+          "right": 153
+      },
+      "Consulting": {
+          "left": 24,
+          "right": 112
+      },
+      "McKinsey": {
+          "left": 42,
+          "right": 101
+      },
+      "Audit": {
+          "left": 19,
+          "right": 124
+      },
+      "Expert-comptable": {
+          "left": 67,
+          "right": 137
+      },
+      "Huissier": {
+          "left": 45,
+          "right": 95
+      },
+      "Avocat d'affaires": {
+          "left": 17,
+          "right": 63
+      },
+      "Syndic": {
+          "left": 26,
+          "right": 154
+      },
+      "Copropriété": {
+          "left": 22,
+          "right": 125
+      },
+      "Multipropriété": {
+          "left": 26,
+          "right": 86
+      },
+      "SCI": {
+          "left": 53,
+          "right": 167
+      },
+      "Holding": {
+          "left": 57,
+          "right": 115
+      },
+      "Trust": {
+          "left": 33,
+          "right": 193
+      },
+      "Stock-options": {
+          "left": 22,
+          "right": 141
+      },
+      "PEA": {
+          "left": 64,
+          "right": 128
+      },
+      "Obligations": {
+          "left": 38,
+          "right": 187
+      },
+      "Nasdaq": {
+          "left": 55,
+          "right": 125
+      },
+      "Wall Street": {
+          "left": 71,
+          "right": 164
+      },
+      "Forex": {
+          "left": 37,
+          "right": 144
+      },
+      "Trading": {
+          "left": 40,
+          "right": 100
+      },
+      "Bitcoin": {
+          "left": 54,
+          "right": 130
+      },
+      "NFT": {
+          "left": 39,
+          "right": 187
+      },
+      "Blockchain": {
+          "left": 26,
+          "right": 99
+      },
+      "Fintech": {
+          "left": 15,
+          "right": 69
+      },
+      "Licorne": {
+          "left": 78,
+          "right": 156
+      },
+      "Levée de fonds": {
+          "left": 64,
+          "right": 136
+      },
+      "Pitch": {
+          "left": 34,
+          "right": 166
+      },
+      "Slide": {
+          "left": 23,
+          "right": 126
+      },
+      "PowerPoint": {
+          "left": 30,
+          "right": 163
+      },
+      "Excel": {
+          "left": 45,
+          "right": 163
+      },
+      "Team building": {
+          "left": 38,
+          "right": 145
+      },
+      "Afterwork": {
+          "left": 38,
+          "right": 108
+      },
+      "Open space": {
+          "left": 11,
+          "right": 82
+      },
+      "Badge": {
+          "left": 30,
+          "right": 61
+      },
+      "Attaché-case": {
+          "left": 33,
+          "right": 92
+      },
+      "Montblanc": {
+          "left": 44,
+          "right": 115
+      },
+      "Cartier": {
+          "left": 26,
+          "right": 129
+      },
+      "Vuitton": {
+          "left": 72,
+          "right": 151
+      },
+      "Dior": {
+          "left": 62,
+          "right": 168
+      },
+      "Gucci": {
+          "left": 14,
+          "right": 74
+      },
+      "Prada": {
+          "left": 21,
+          "right": 96
+      },
+      "Burberry": {
+          "left": 19,
+          "right": 120
+      },
+      "Balenciaga": {
+          "left": 63,
+          "right": 151
+      },
+      "Louboutin": {
+          "left": 49,
+          "right": 173
+      },
+      "Goyard": {
+          "left": 28,
+          "right": 136
+      },
+      "Berluti": {
+          "left": 50,
+          "right": 138
+      },
+      "Tod's": {
+          "left": 49,
+          "right": 149
+      },
+      "Bally": {
+          "left": 57,
+          "right": 157
+      },
+      "Church's": {
+          "left": 17,
+          "right": 119
+      },
+      "Paraboot": {
+          "left": 25,
+          "right": 115
+      },
+      "Hackett": {
+          "left": 41,
+          "right": 143
+      },
+      "Tommy Hilfiger": {
+          "left": 34,
+          "right": 164
+      },
+      "Gant": {
+          "left": 29,
+          "right": 121
+      },
+      "Eden Park": {
+          "left": 32,
+          "right": 114
+      },
+      "Serge Blanco": {
+          "left": 37,
+          "right": 132
+      },
+      "Vicart": {
+          "left": 28,
+          "right": 196
+      },
+      "Fursac": {
+          "left": 27,
+          "right": 93
+      },
+      "Father & Sons": {
+          "left": 73,
+          "right": 142
+      },
+      "Célio": {
+          "left": 38,
+          "right": 160
+      },
+      "Jules": {
+          "left": 69,
+          "right": 151
+      },
+      "Zara": {
+          "left": 48,
+          "right": 145
+      },
+      "Massimo Dutti": {
+          "left": 39,
+          "right": 90
+      },
+      "Sandro": {
+          "left": 43,
+          "right": 112
+      },
+      "Maje": {
+          "left": 27,
+          "right": 116
+      },
+      "Zadig & Voltaire": {
+          "left": 22,
+          "right": 104
+      },
+      "The Kooples": {
+          "left": 19,
+          "right": 73
+      },
+      "Sézane": {
+          "left": 25,
+          "right": 87
+      },
+      "Bonpoint": {
+          "left": 37,
+          "right": 145
+      },
+      "Jacadi": {
+          "left": 22,
+          "right": 70
+      },
+      "Tartine et Chocolat": {
+          "left": 60,
+          "right": 174
+      },
+      "Catimini": {
+          "left": 45,
+          "right": 170
+      },
+      "Guerlain": {
+          "left": 20,
+          "right": 93
+      },
+      "Lancôme": {
+          "left": 51,
+          "right": 134
+      },
+      "Nuxe": {
+          "left": 43,
+          "right": 85
+      },
+      "Caudalie": {
+          "left": 32,
+          "right": 96
+      },
+      "Clarins": {
+          "left": 20,
+          "right": 138
+      },
+      "L'Oréal": {
+          "left": 28,
+          "right": 106
+      },
+      "Estée Lauder": {
+          "left": 38,
+          "right": 109
+      },
+      "Ray-Ban": {
+          "left": 18,
+          "right": 74
+      },
+      "Persol": {
+          "left": 35,
+          "right": 146
+      },
+      "Omega": {
+          "left": 38,
+          "right": 137
+      },
+      "Breitling": {
+          "left": 23,
+          "right": 128
+      },
+      "Patek Philippe": {
+          "left": 59,
+          "right": 175
+      },
+      "Audemars Piguet": {
+          "left": 72,
+          "right": 145
+      },
+      "TAG Heuer": {
+          "left": 31,
+          "right": 118
+      },
+      "Tissot": {
+          "left": 22,
+          "right": 145
+      },
+      "Swarovski": {
+          "left": 34,
+          "right": 153
+      },
+      "Mauboussin": {
+          "left": 25,
+          "right": 67
+      },
+      "Van Cleef & Arpels": {
+          "left": 26,
+          "right": 141
+      },
+      "Chaumet": {
+          "left": 20,
+          "right": 93
+      },
+      "Boucheron": {
+          "left": 43,
+          "right": 90
+      },
+      "Baccarat": {
+          "left": 63,
+          "right": 158
+      },
+      "Lalique": {
+          "left": 28,
+          "right": 163
+      },
+      "Antiquaire": {
+          "left": 28,
+          "right": 110
+      },
+      "Commissaire-priseur": {
+          "left": 38,
+          "right": 193
+      },
+      "Mécénat": {
+          "left": 56,
+          "right": 182
+      },
+      "Fondation": {
+          "left": 35,
+          "right": 126
+      },
+      "Opéra": {
+          "left": 54,
+          "right": 110
+      },
+      "Ballet": {
+          "left": 31,
+          "right": 76
+      },
+      "Philharmonie": {
+          "left": 34,
+          "right": 175
+      },
+      "Clavecin": {
+          "left": 32,
+          "right": 165
+      },
+      "Violoncelle": {
+          "left": 17,
+          "right": 102
+      },
+      "Harpe": {
+          "left": 39,
+          "right": 144
+      },
+      "Orgue": {
+          "left": 31,
+          "right": 150
+      },
+      "Chœur": {
+          "left": 24,
+          "right": 121
+      },
+      "Catéchisme": {
+          "left": 25,
+          "right": 109
+      },
+      "Communion": {
+          "left": 60,
+          "right": 168
+      },
+      "Baptême": {
+          "left": 41,
+          "right": 185
+      },
+      "Confirmation": {
+          "left": 45,
+          "right": 156
+      },
+      "Pèlerinage": {
+          "left": 38,
+          "right": 102
+      },
+      "Chapelet": {
+          "left": 61,
+          "right": 153
+      },
+      "Médaille de baptême": {
+          "left": 48,
+          "right": 97
+      },
+      "École privée": {
+          "left": 23,
+          "right": 108
+      },
+      "Prépa": {
+          "left": 20,
+          "right": 75
+      },
+      "ESSEC": {
+          "left": 57,
+          "right": 113
+      },
+      "ESCP": {
+          "left": 31,
+          "right": 209
+      },
+      "EDHEC": {
+          "left": 46,
+          "right": 193
+      },
+      "INSEAD": {
+          "left": 56,
+          "right": 132
+      },
+      "MBA": {
+          "left": 28,
+          "right": 60
+      },
+      "Polytechnique": {
+          "left": 32,
+          "right": 183
+      },
+      "ENA": {
+          "left": 44,
+          "right": 148
+      },
+      "Corps d'État": {
+          "left": 63,
+          "right": 162
+      },
+      "Préfet": {
+          "left": 33,
+          "right": 97
+      },
+      "Ambassadeur": {
+          "left": 18,
+          "right": 116
+      },
+      "Consul": {
+          "left": 51,
+          "right": 102
+      },
+      "Sénat": {
+          "left": 44,
+          "right": 109
+      },
+      "Académie française": {
+          "left": 19,
+          "right": 101
+      },
+      "Jockey Club": {
+          "left": 36,
+          "right": 164
+      },
+      "Country Club": {
+          "left": 37,
+          "right": 88
+      },
+      "Polo Club": {
+          "left": 52,
+          "right": 167
+      },
+      "Yacht Club": {
+          "left": 25,
+          "right": 127
+      },
+      "Golf Club": {
+          "left": 56,
+          "right": 134
+      },
+      "Cercle de jeux": {
+          "left": 65,
+          "right": 154
+      },
+      "Casino": {
+          "left": 14,
+          "right": 96
+      },
+      "Roulette": {
+          "left": 42,
+          "right": 177
+      },
+      "Blackjack": {
+          "left": 46,
+          "right": 163
+      },
+      "Poker": {
+          "left": 29,
+          "right": 73
+      },
+      "Backgammon": {
+          "left": 46,
+          "right": 161
+      },
+      "Billard": {
+          "left": 37,
+          "right": 157
+      },
+      "Croquet": {
+          "left": 31,
+          "right": 60
+      },
+      "Escrime": {
+          "left": 36,
+          "right": 116
+      },
+      "Aviron": {
+          "left": 52,
+          "right": 152
+      },
+      "Voile": {
+          "left": 34,
+          "right": 105
+      },
+      "Catamaran": {
+          "left": 47,
+          "right": 134
+      },
+      "Voilier": {
+          "left": 23,
+          "right": 84
+      },
+      "Zodiac": {
+          "left": 20,
+          "right": 125
+      },
+      "Hors-bord": {
+          "left": 71,
+          "right": 147
+      },
+      "Ski nautique": {
+          "left": 13,
+          "right": 69
+      },
+      "Wakeboard": {
+          "left": 30,
+          "right": 117
+      },
+      "Kitesurf": {
+          "left": 16,
+          "right": 73
+      },
+      "Plongée": {
+          "left": 22,
+          "right": 108
+      },
+      "Parachutisme": {
+          "left": 57,
+          "right": 151
+      },
+      "Parapente": {
+          "left": 37,
+          "right": 77
+      },
+      "ULM": {
+          "left": 49,
+          "right": 163
+      },
+      "Ercuis": {
+          "left": 50,
+          "right": 144
+      },
+      "Puiforcat": {
+          "left": 12,
+          "right": 70
+      },
+      "CrossFit": {
+          "left": 84,
+          "right": 107
+      },
+      "Strava": {
+          "left": 69,
+          "right": 87
+      },
+      "Lidl": {
+          "left": 80,
+          "right": 89
+      },
+      "Action": {
+          "left": 86,
+          "right": 104
+      },
+      "Ryanair": {
+          "left": 78,
+          "right": 97
+      },
+      "Nucléaire": {
+          "left": 111,
+          "right": 129
+      },
+      "Gifi": {
+          "left": 52,
+          "right": 66
+      },
+      "Centrakor": {
+          "left": 79,
+          "right": 91
+      },
+      "Boulanger": {
+          "left": 99,
+          "right": 118
+      },
+      "But": {
+          "left": 94,
+          "right": 130
+      },
+      "Conforama": {
+          "left": 54,
+          "right": 70
+      },
+      "Maisons du Monde": {
+          "left": 93,
+          "right": 101
+      },
+      "Nature & Découvertes": {
+          "left": 105,
+          "right": 120
+      },
+      "Truffaut": {
+          "left": 51,
+          "right": 62
+      },
+      "Jardiland": {
+          "left": 44,
+          "right": 57
+      },
+      "Gamm Vert": {
+          "left": 44,
+          "right": 61
+      },
+      "Norauto": {
+          "left": 37,
+          "right": 46
+      },
+      "Feu Vert": {
+          "left": 42,
+          "right": 56
+      },
+      "Speedy": {
+          "left": 83,
+          "right": 104
+      },
+      "Carglass": {
+          "left": 65,
+          "right": 71
       }
   };
   // __SEED_VOTES_END__
