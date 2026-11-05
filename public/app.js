@@ -2817,35 +2817,45 @@
   const WORD_LIST = Object.keys(EMBEDDED_SEED_VOTES);
 
   // ============================================================================
-  // LocalStorage Persistence Keys
+  // Constants & Game States
   // ============================================================================
-  const STORAGE_KEY_STATS = 'gd_game_stats_v1';
-  const STORAGE_KEY_DELTAS = 'gd_vote_deltas_v1';
-
-  // ============================================================================
-  // Game States
-  // ============================================================================
-  const STATES = {
-    VOTING: 'VOTING',
-    REVEALING: 'REVEALING',
-    REVEALED: 'REVEALED'
-  };
-
-  let currentState = STATES.VOTING;
-  let voteDeltas = {};
-  let currentWord = "";
-  let wordIndex = 1;
-  let revealTimestamp = 0;
+  const ROUNDS_PER_SESSION = 10;
   const ADVANCE_GUARD_DELAY_MS = 200; // Guard against accidental instant advance
 
-  // Player Stats Object
+  const STATES = {
+    INTRO: 'INTRO',
+    VOTING: 'VOTING',
+    REVEALING: 'REVEALING',
+    REVEALED: 'REVEALED',
+    SUMMARY: 'SUMMARY'
+  };
+
+  let currentState = STATES.INTRO;
+  let voteDeltas = {};
+  let currentWord = "";
+  let revealTimestamp = 0;
+
+  // Session State Object
+  const session = {
+    words: [],
+    index: 0,
+    history: [],
+    lastSummary: null
+  };
+
+  // Player Career Stats Object
   let stats = {
     streak: 0,
     bestStreak: 0,
     totalPlayed: 0,
     totalWins: 0,
-    seenWords: []
+    seenWords: [],
+    seriesCompleted: 0
   };
+
+  // LocalStorage Persistence Keys
+  const STORAGE_KEY_STATS = 'gd_game_stats_v1';
+  const STORAGE_KEY_DELTAS = 'gd_vote_deltas_v1';
 
   // DOM Elements Cache
   const DOM = {
@@ -2855,6 +2865,7 @@
     panelRight: document.getElementById('panel-right'),
     mainWord: document.getElementById('main-word'),
     metaIndex: document.getElementById('meta-index'),
+    roundPips: document.getElementById('round-pips'),
     verdictPill: document.getElementById('verdict-pill'),
     verdictText: document.getElementById('verdict-text'),
     verdictIcon: document.getElementById('verdict-icon'),
@@ -2865,10 +2876,39 @@
     badgeLeft: document.getElementById('badge-left'),
     badgeRight: document.getElementById('badge-right'),
     btnContinue: document.getElementById('btn-continue'),
+    continueLabelDesktop: document.getElementById('continue-label-desktop'),
+    continueLabelTouch: document.getElementById('continue-label-touch'),
     statStreak: document.getElementById('stat-streak'),
     statBest: document.getElementById('stat-best'),
     statMajority: document.getElementById('stat-majority'),
-    statWins: document.getElementById('stat-wins')
+    statWins: document.getElementById('stat-wins'),
+    brandPill: document.querySelector('.brand-pill'),
+
+    // Intro Screen Elements
+    introOverlay: document.getElementById('intro-overlay'),
+    introCareerBar: document.getElementById('intro-career-bar'),
+    introCareerText: document.getElementById('intro-career-text'),
+    btnStartSession: document.getElementById('btn-start-session'),
+
+    // Summary Screen Elements
+    summaryOverlay: document.getElementById('summary-overlay'),
+    bilanTitle: document.getElementById('bilan-title'),
+    bilanArchetypeTitle: document.getElementById('bilan-archetype-title'),
+    bilanArchetypeDesc: document.getElementById('bilan-archetype-desc'),
+    bilanFlairBadge: document.getElementById('bilan-flair-badge'),
+    bilanMajorityScore: document.getElementById('bilan-majority-score'),
+    bilanMajoritySub: document.getElementById('bilan-majority-sub'),
+    bilanBiasBadge: document.getElementById('bilan-bias-badge'),
+    bilanDivergenceHeadline: document.getElementById('bilan-divergence-headline'),
+    bilanDivergenceFill: document.getElementById('bilan-divergence-fill'),
+    bilanDivergenceMarker: document.getElementById('bilan-divergence-marker'),
+    bilanCompassSub: document.getElementById('bilan-compass-sub'),
+    bilanHottake: document.getElementById('bilan-hottake'),
+    bilanHottakeLabel: document.getElementById('bilan-hottake-label'),
+    bilanHottakeText: document.getElementById('bilan-hottake-text'),
+    bilanHottakeBadge: document.getElementById('bilan-hottake-badge'),
+    bilanWordsList: document.getElementById('bilan-words-list'),
+    btnPlayAgain: document.getElementById('btn-play-again')
   };
 
   // ============================================================================
@@ -2960,6 +3000,7 @@
   }
 
   function onTouchStart(e) {
+    if (currentState !== STATES.VOTING && currentState !== STATES.REVEALED) return;
     if (e.touches.length !== 1) return;
     const touch = e.touches[0];
     touchState.active = true;
@@ -3073,7 +3114,8 @@
           bestStreak: parsed.bestStreak || 0,
           totalPlayed: parsed.totalPlayed || 0,
           totalWins: parsed.totalWins || 0,
-          seenWords: Array.isArray(parsed.seenWords) ? parsed.seenWords : []
+          seenWords: Array.isArray(parsed.seenWords) ? parsed.seenWords : [],
+          seriesCompleted: parsed.seriesCompleted || 0
         };
       }
       const rawDeltas = localStorage.getItem(STORAGE_KEY_DELTAS);
@@ -3096,16 +3138,18 @@
   }
 
   function updateStatsUI() {
-    DOM.statStreak.textContent = stats.streak;
-    DOM.statBest.textContent = stats.bestStreak;
-    DOM.statWins.textContent = `${stats.totalWins}/${stats.totalPlayed}`;
-    DOM.statMajority.textContent = stats.totalPlayed > 0
-      ? `${Math.round((stats.totalWins / stats.totalPlayed) * 100)}%`
-      : '0%';
+    if (DOM.statStreak) DOM.statStreak.textContent = stats.streak;
+    if (DOM.statBest) DOM.statBest.textContent = stats.bestStreak;
+    if (DOM.statWins) DOM.statWins.textContent = `${stats.totalWins}/${stats.totalPlayed}`;
+    if (DOM.statMajority) {
+      DOM.statMajority.textContent = stats.totalPlayed > 0
+        ? `${Math.round((stats.totalWins / stats.totalPlayed) * 100)}%`
+        : '0%';
+    }
   }
 
   // ============================================================================
-  // Word Selection & Randomization
+  // Deck Generation & Round Pips UI
   // ============================================================================
   function shuffle(array) {
     const copy = [...array];
@@ -3116,22 +3160,102 @@
     return copy;
   }
 
-  function getAvailableWords() {
-    const unseen = WORD_LIST.filter(w => !stats.seenWords.includes(w));
-    if (unseen.length === 0) {
+  function buildSessionDeck() {
+    let available = WORD_LIST.filter(w => !stats.seenWords.includes(w));
+    if (available.length < ROUNDS_PER_SESSION) {
       stats.seenWords = [];
       saveStats();
-      return WORD_LIST;
+      available = [...WORD_LIST];
     }
-    return unseen;
+
+    return shuffle(available).slice(0, ROUNDS_PER_SESSION);
   }
 
-  function prepareNextWord() {
-    const shuffled = shuffle(getAvailableWords());
-    currentWord = shuffled[0] || "Quinoa";
-    wordIndex = stats.totalPlayed + 1;
+  function renderRoundPips() {
+    if (!DOM.roundPips) return;
+    DOM.roundPips.innerHTML = '';
+
+    for (let i = 0; i < ROUNDS_PER_SESSION; i++) {
+      const pip = document.createElement('span');
+      pip.className = 'round-pip';
+
+      if (i < session.history.length) {
+        const h = session.history[i];
+        pip.classList.add(h.userSide === 'left' ? 'voted-left' : 'voted-right');
+        if (!h.won) {
+          pip.classList.add('is-loss');
+        }
+        pip.title = `${h.word} (${h.userSide === 'left' ? 'Gauche' : 'Droite'})`;
+      } else if (i === session.index && session.history.length === session.index) {
+        pip.classList.add('is-current');
+      }
+
+      DOM.roundPips.appendChild(pip);
+    }
+  }
+
+  // ============================================================================
+  // Intro Screen & Session Lifecycle
+  // ============================================================================
+  function showIntroScreen() {
+    currentState = STATES.INTRO;
+    DOM.body.classList.remove('is-summary', 'revealed', 'revealing', 'resetting', 'hover-left', 'hover-right');
+    DOM.body.classList.add('is-intro');
+
+    if (DOM.introOverlay) DOM.introOverlay.setAttribute('aria-hidden', 'false');
+    if (DOM.summaryOverlay) DOM.summaryOverlay.setAttribute('aria-hidden', 'true');
+
+    document.documentElement.style.setProperty('--split-pos', '50%');
+    spring.split = 50;
+    spring.targetSplit = 50;
+    resetSpring();
+
+    if (DOM.introCareerBar) {
+      if (stats.totalPlayed > 0) {
+        DOM.introCareerBar.hidden = false;
+        DOM.introCareerBar.removeAttribute('hidden');
+        const seriesCount = stats.seriesCompleted || 0;
+        const s = seriesCount > 1 ? 's' : '';
+        const winRate = Math.round((stats.totalWins / stats.totalPlayed) * 100);
+        if (DOM.introCareerText) {
+          DOM.introCareerText.textContent = `${seriesCount} série${s} terminée${s} · Record : ${stats.bestStreak} · Majorité : ${winRate}%`;
+        }
+      } else {
+        DOM.introCareerBar.hidden = true;
+        DOM.introCareerBar.setAttribute('hidden', '');
+      }
+    }
+  }
+
+  function startNewSession() {
+    session.words = buildSessionDeck();
+    session.index = 0;
+    session.history = [];
+    session.lastSummary = null;
+
+    DOM.body.classList.remove('is-intro', 'is-summary', 'revealed', 'revealing', 'resetting', 'hover-left', 'hover-right');
+    if (DOM.introOverlay) DOM.introOverlay.setAttribute('aria-hidden', 'true');
+    if (DOM.summaryOverlay) DOM.summaryOverlay.setAttribute('aria-hidden', 'true');
+
+    document.documentElement.style.setProperty('--split-pos', '50%');
+    spring.split = 50;
+    spring.targetSplit = 50;
+    resetSpring();
+
+    currentWord = session.words[0] || "Quinoa";
     DOM.mainWord.textContent = currentWord;
-    DOM.metaIndex.textContent = `N° ${wordIndex}`;
+    DOM.metaIndex.textContent = `N° 1 / ${ROUNDS_PER_SESSION}`;
+
+    DOM.percentLeft.textContent = "0";
+    DOM.percentRight.textContent = "0";
+    DOM.badgeLeft.classList.remove('is-selected');
+    DOM.badgeRight.classList.remove('is-selected');
+
+    if (DOM.continueLabelDesktop) DOM.continueLabelDesktop.textContent = "Cliquer pour continuer";
+    if (DOM.continueLabelTouch) DOM.continueLabelTouch.textContent = "Toucher pour continuer";
+
+    renderRoundPips();
+    currentState = STATES.VOTING;
   }
 
   // ============================================================================
@@ -3176,10 +3300,6 @@
     processVerdictAndReveal(voteResult);
   }
 
-  /**
-   * Computes vote results locally from EMBEDDED_SEED_VOTES + user vote deltas
-   * when opened directly via file:// or when the Worker API is offline.
-   */
   function computeLocalVote(word, side) {
     const base = EMBEDDED_SEED_VOTES[word] || { left: 50, right: 50 };
     const delta = voteDeltas[word] || { left: 0, right: 0 };
@@ -3225,6 +3345,33 @@
     const isWinner = Boolean(data.won);
     lastRevealedLeftPct = leftPct;
 
+    const userAgreePercent = data.userSide === 'left' ? data.leftPercent : data.rightPercent;
+    const majorityPercent = Math.max(data.leftPercent, data.rightPercent);
+    const gapFromMajority = isWinner ? 0 : (majorityPercent - userAgreePercent);
+
+    let roundDivergence = 0;
+    if (!isWinner) {
+      if (data.userSide === 'left') {
+        roundDivergence = -data.rightPercent;
+      } else {
+        roundDivergence = data.leftPercent;
+      }
+    }
+
+    session.history.push({
+      word: data.word,
+      userSide: data.userSide,
+      leftVotes: data.leftVotes,
+      rightVotes: data.rightVotes,
+      leftPercent: data.leftPercent,
+      rightPercent: data.rightPercent,
+      userAgreePercent,
+      majorityPercent,
+      gapFromMajority,
+      roundDivergence,
+      won: isWinner
+    });
+
     // Update Player Stats
     stats.totalPlayed++;
     if (!stats.seenWords.includes(data.word)) {
@@ -3242,6 +3389,18 @@
     }
 
     saveStats();
+
+    // Re-render round pips so current pip immediately lights up
+    renderRoundPips();
+
+    // If round 10, update continue button labels to "Voir les résultats"
+    if (session.history.length >= ROUNDS_PER_SESSION) {
+      if (DOM.continueLabelDesktop) DOM.continueLabelDesktop.textContent = "Voir les résultats";
+      if (DOM.continueLabelTouch) DOM.continueLabelTouch.textContent = "Voir les résultats";
+    } else {
+      if (DOM.continueLabelDesktop) DOM.continueLabelDesktop.textContent = "Cliquer pour continuer";
+      if (DOM.continueLabelTouch) DOM.continueLabelTouch.textContent = "Toucher pour continuer";
+    }
 
     // Clamp split boundary visually so both side numbers remain readable
     applyRevealedSplit(leftPct);
@@ -3292,6 +3451,12 @@
       document.activeElement.blur();
     }
 
+    if (session.history.length >= ROUNDS_PER_SESSION) {
+      showSessionSummary();
+      return;
+    }
+
+    session.index++;
     currentState = STATES.REVEALING;
     touchState.active = false;
     touchState.moved = false;
@@ -3312,7 +3477,10 @@
     DOM.badgeRight.classList.remove('is-selected');
 
     setTimeout(() => {
-      prepareNextWord();
+      currentWord = session.words[session.index] || "Quinoa";
+      DOM.mainWord.textContent = currentWord;
+      DOM.metaIndex.textContent = `N° ${session.index + 1} / ${ROUNDS_PER_SESSION}`;
+      renderRoundPips();
 
       DOM.mainWord.classList.remove('word-exit-up');
       DOM.mainWord.classList.add('word-enter-down');
@@ -3337,6 +3505,205 @@
   }
 
   // ============================================================================
+  // Satirical French Archetype Engine & End-of-Run Summary
+  // ============================================================================
+  function computeArchetype(winsCount, falseLeftCount, falseRightCount, avgAgreePct) {
+    if (winsCount === 10) {
+      return {
+        title: "Le Baromètre de la République",
+        desc: "10 sur 10 : aucun cliché hexagonal ne vous échappe. Vous lisez dans l'inconscient collectif français comme dans un livre ouvert."
+      };
+    }
+
+    if (winsCount >= 8) {
+      if (falseLeftCount > falseRightCount) {
+        return {
+          title: "L'Observateur au Prisme Rouge",
+          desc: `Une lecture quasi parfaite de l'opinion (${avgAgreePct}% d'accord moyen), avec une légère tendance à voir de la gauche là où la France voit la droite.`
+        };
+      } else if (falseRightCount > falseLeftCount) {
+        return {
+          title: "L'Observateur au Prisme Bleu",
+          desc: `Une lecture quasi parfaite de l'opinion (${avgAgreePct}% d'accord moyen), avec une légère tendance à ranger à droite ce que la foule juge de gauche.`
+        };
+      } else {
+        return {
+          title: "Le Sociologue de Comptoir",
+          desc: `Vous captez l'air du temps avec une précision chirurgicale (${avgAgreePct}% d'accord moyen), sans jamais pencher d'un côté plus que de l'autre.`
+        };
+      }
+    }
+
+    if (winsCount >= 5) {
+      if (falseLeftCount > falseRightCount) {
+        return {
+          title: "Le Révisionniste de Gauche",
+          desc: "Vous connaissez les grands classiques, mais dès qu'un mot fait débat, vous refusez de le laisser à la droite."
+        };
+      } else if (falseRightCount > falseLeftCount) {
+        return {
+          title: "Le Révisionniste de Droite",
+          desc: "Vous validez les évidences, mais face aux mots ambigus, vous voyez systématiquement la patte de la droite."
+        };
+      } else {
+        return {
+          title: "L'Esprit Libre du Kiosque",
+          desc: "Moitié dans le consensus, moitié franc-tireur : vos désaccords avec les Français se répartissent équitablement des deux côtés."
+        };
+      }
+    }
+
+    // winsCount < 5 (Contrarian / À Contre-Courant)
+    if (falseLeftCount > falseRightCount) {
+      return {
+        title: "L'Insurgé du Dictionnaire",
+        desc: "À rebours de la majorité nationale, vous rebaptisez à gauche même les symboles que les Français classent à droite."
+      };
+    } else if (falseRightCount > falseLeftCount) {
+      return {
+        title: "Le Frondeur Réactionnaire",
+        desc: "Contre l'avis général, vous voyez des marqueurs de droite jusque dans les totems préférés de la gauche."
+      };
+    } else {
+      return {
+        title: "L'Anticonformiste Intégral",
+        desc: `Seulement ${avgAgreePct}% d'accord moyen avec le pays : vous semblez vivre dans une France parallèle où tous les clichés sont inversés.`
+      };
+    }
+  }
+
+  function showSessionSummary() {
+    stats.seriesCompleted = (stats.seriesCompleted || 0) + 1;
+    saveStats();
+
+    currentState = STATES.SUMMARY;
+
+    const winsCount = session.history.filter(h => h.won).length;
+    const lossesCount = ROUNDS_PER_SESSION - winsCount;
+    const avgAgreePct = Math.round(session.history.reduce((acc, h) => acc + h.userAgreePercent, 0) / ROUNDS_PER_SESSION);
+    const falseLeftCount = session.history.filter(h => !h.won && h.userSide === 'left').length;
+    const falseRightCount = session.history.filter(h => !h.won && h.userSide === 'right').length;
+
+    const netDivergenceSum = session.history.reduce((acc, h) => acc + (h.roundDivergence || 0), 0);
+    const divergenceIndex = Math.round(netDivergenceSum / ROUNDS_PER_SESSION);
+    const markerPct = Math.max(8, Math.min(92, 50 + divergenceIndex));
+
+    const wordsNoun = winsCount <= 1 ? 'mot' : 'mots';
+    if (DOM.bilanArchetypeDesc) {
+      DOM.bilanArchetypeDesc.textContent = `Vous avez voté comme la majorité sur ${winsCount} ${wordsNoun} sur 10 (${avgAgreePct}% d'accord moyen).`;
+    }
+
+    // Update Metric 1: Accord Majoritaire
+    const majorityPct = Math.round((winsCount / ROUNDS_PER_SESSION) * 100);
+    if (DOM.bilanMajorityScore) DOM.bilanMajorityScore.textContent = `${winsCount}`;
+    if (DOM.bilanMajoritySub) DOM.bilanMajoritySub.textContent = `En phase avec ${avgAgreePct}% des votants en moyenne`;
+    if (DOM.bilanFlairBadge) DOM.bilanFlairBadge.textContent = `${majorityPct}%`;
+
+    // Update Metric 2: Écart vs Majorité
+    if (DOM.bilanDivergenceMarker) {
+      DOM.bilanDivergenceMarker.style.left = `${markerPct}%`;
+    }
+
+    if (DOM.bilanDivergenceFill) {
+      if (markerPct < 48) {
+        DOM.bilanDivergenceFill.className = 'divergence-fill is-left';
+        DOM.bilanDivergenceFill.style.left = `${markerPct}%`;
+        DOM.bilanDivergenceFill.style.width = `${50 - markerPct}%`;
+      } else if (markerPct > 52) {
+        DOM.bilanDivergenceFill.className = 'divergence-fill is-right';
+        DOM.bilanDivergenceFill.style.left = '50%';
+        DOM.bilanDivergenceFill.style.width = `${markerPct - 50}%`;
+      } else {
+        DOM.bilanDivergenceFill.className = 'divergence-fill';
+        DOM.bilanDivergenceFill.style.left = '50%';
+        DOM.bilanDivergenceFill.style.width = '0%';
+      }
+    }
+
+    let biasBadge = "Aligné";
+    let divergenceHeadline = "Aucun écart";
+    let compassSub = "0 vote à contre-courant";
+
+    if (lossesCount === 0) {
+      biasBadge = "Aligné";
+      divergenceHeadline = "Aucun écart";
+      compassSub = "0 vote à contre-courant";
+    } else if (falseLeftCount > falseRightCount) {
+      biasBadge = "Prisme Gauche";
+      divergenceHeadline = "Tendance Gauche";
+      compassSub = `${falseLeftCount} désaccord${falseLeftCount > 1 ? 's' : ''} vers la Gauche · ${falseRightCount} vers la Droite`;
+    } else if (falseRightCount > falseLeftCount) {
+      biasBadge = "Prisme Droite";
+      divergenceHeadline = "Tendance Droite";
+      compassSub = `${falseRightCount} désaccord${falseRightCount > 1 ? 's' : ''} vers la Droite · ${falseLeftCount} vers la Gauche`;
+    } else {
+      biasBadge = "Équilibré";
+      divergenceHeadline = "Écarts équilibrés";
+      compassSub = `${falseLeftCount} désaccord${falseLeftCount > 1 ? 's' : ''} vers la Gauche · ${falseRightCount} vers la Droite`;
+    }
+
+    if (DOM.bilanBiasBadge) DOM.bilanBiasBadge.textContent = biasBadge;
+    if (DOM.bilanDivergenceHeadline) DOM.bilanDivergenceHeadline.textContent = divergenceHeadline;
+    if (DOM.bilanCompassSub) DOM.bilanCompassSub.textContent = compassSub;
+
+    // Find Lowest userAgreePercent (Notable Vote)
+    let minItem = session.history[0];
+    for (const item of session.history) {
+      if (item.userAgreePercent < minItem.userAgreePercent) {
+        minItem = item;
+      }
+    }
+
+    if (minItem.userAgreePercent < 50) {
+      if (DOM.bilanHottakeLabel) DOM.bilanHottakeLabel.textContent = "VOTE LE PLUS À CONTRE-COURANT";
+      if (DOM.bilanHottakeText) {
+        DOM.bilanHottakeText.textContent = `Voter « ${minItem.word} » à ${minItem.userSide === 'left' ? 'Gauche' : 'Droite'} — seuls ${minItem.userAgreePercent}% des joueurs sont d'accord avec vous.`;
+      }
+      if (DOM.bilanHottakeBadge) DOM.bilanHottakeBadge.textContent = `${minItem.userAgreePercent}%`;
+    } else {
+      if (DOM.bilanHottakeLabel) DOM.bilanHottakeLabel.textContent = "VOTE LE PLUS SERRÉ";
+      if (DOM.bilanHottakeText) {
+        DOM.bilanHottakeText.textContent = `« ${minItem.word} » à ${minItem.userSide === 'left' ? 'Gauche' : 'Droite'} (${minItem.userAgreePercent}% de majorité) — un sans-faute sur toute la ligne !`;
+      }
+      if (DOM.bilanHottakeBadge) DOM.bilanHottakeBadge.textContent = `${minItem.userAgreePercent}%`;
+    }
+
+    // 10-Word Recap Grid
+    if (DOM.bilanWordsList) {
+      DOM.bilanWordsList.innerHTML = '';
+      session.history.forEach(item => {
+        const chip = document.createElement('div');
+        chip.className = `word-recap-chip ${item.userSide === 'left' ? 'is-left' : 'is-right'} ${item.won ? 'is-win' : 'is-loss'}`;
+        chip.innerHTML = `
+          <div class="chip-left">
+            <span class="chip-side">${item.userSide === 'left' ? 'G' : 'D'}</span>
+            <span class="chip-word" title="${item.word}">${item.word}</span>
+          </div>
+          <div class="chip-right">
+            <span class="chip-pct">${item.userAgreePercent}%</span>
+            <span class="chip-verdict">${item.won ? '✦' : '—'}</span>
+          </div>
+        `;
+        DOM.bilanWordsList.appendChild(chip);
+      });
+    }
+
+    const summarySplitPct = 100 - markerPct;
+    session.lastSummary = {
+      summarySplitPct
+    };
+
+    // Viewport background split animation reflecting divergence
+    applyRevealedSplit(summarySplitPct);
+
+    // Toggle Overlay classes & accessibility
+    DOM.body.classList.remove('revealed', 'revealing', 'resetting', 'hover-left', 'hover-right', 'is-intro');
+    DOM.body.classList.add('is-summary');
+    if (DOM.introOverlay) DOM.introOverlay.setAttribute('aria-hidden', 'true');
+    if (DOM.summaryOverlay) DOM.summaryOverlay.setAttribute('aria-hidden', 'false');
+  }
+
+  // ============================================================================
   // Event Listeners (Mouse, Keyboard, Touch, Window)
   // ============================================================================
   function setupEventListeners() {
@@ -3353,29 +3720,60 @@
     window.addEventListener('resize', () => {
       if (currentState === STATES.REVEALED) {
         applyRevealedSplit(lastRevealedLeftPct);
+      } else if (currentState === STATES.SUMMARY && session.lastSummary) {
+        applyRevealedSplit(session.lastSummary.summarySplitPct);
       }
     }, { passive: true });
 
-    DOM.panelLeft.addEventListener('click', (e) => {
-      if (touchState.moved && Date.now() - touchState.lastEndTime < 450) return;
-      if (currentState === STATES.VOTING) {
-        e.preventDefault();
-        handleVote('left');
-      }
-    });
+    if (DOM.panelLeft) {
+      DOM.panelLeft.addEventListener('click', (e) => {
+        if (touchState.moved && Date.now() - touchState.lastEndTime < 450) return;
+        if (currentState === STATES.VOTING) {
+          e.preventDefault();
+          handleVote('left');
+        }
+      });
+    }
 
-    DOM.panelRight.addEventListener('click', (e) => {
-      if (touchState.moved && Date.now() - touchState.lastEndTime < 450) return;
-      if (currentState === STATES.VOTING) {
-        e.preventDefault();
-        handleVote('right');
-      }
-    });
+    if (DOM.panelRight) {
+      DOM.panelRight.addEventListener('click', (e) => {
+        if (touchState.moved && Date.now() - touchState.lastEndTime < 450) return;
+        if (currentState === STATES.VOTING) {
+          e.preventDefault();
+          handleVote('right');
+        }
+      });
+    }
 
-    DOM.btnContinue.addEventListener('click', (e) => {
-      e.stopPropagation();
-      advanceToNextWord();
-    });
+    if (DOM.btnContinue) {
+      DOM.btnContinue.addEventListener('click', (e) => {
+        e.stopPropagation();
+        advanceToNextWord();
+      });
+    }
+
+    if (DOM.btnStartSession) {
+      DOM.btnStartSession.addEventListener('click', (e) => {
+        e.stopPropagation();
+        startNewSession();
+      });
+    }
+
+    if (DOM.btnPlayAgain) {
+      DOM.btnPlayAgain.addEventListener('click', (e) => {
+        e.stopPropagation();
+        startNewSession();
+      });
+    }
+
+    if (DOM.brandPill) {
+      DOM.brandPill.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (currentState === STATES.SUMMARY || currentState === STATES.VOTING) {
+          showIntroScreen();
+        }
+      });
+    }
 
     window.addEventListener('click', () => {
       if (touchState.moved && Date.now() - touchState.lastEndTime < 450) return;
@@ -3385,7 +3783,12 @@
     });
 
     window.addEventListener('keydown', (e) => {
-      if (currentState === STATES.VOTING) {
+      if (currentState === STATES.INTRO) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          startNewSession();
+        }
+      } else if (currentState === STATES.VOTING) {
         if (e.key === 'ArrowLeft') {
           e.preventDefault();
           handleVote('left');
@@ -3398,6 +3801,11 @@
           e.preventDefault();
           advanceToNextWord();
         }
+      } else if (currentState === STATES.SUMMARY) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          startNewSession();
+        }
       }
     });
   }
@@ -3409,7 +3817,7 @@
     loadState();
     setupEventListeners();
     physicsLoop();
-    prepareNextWord();
+    showIntroScreen();
   }
 
   if (document.readyState === 'loading') {

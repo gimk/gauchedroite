@@ -15,7 +15,7 @@
   
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="is-intro">
   <!-- Silk-Screen / Risograph Fine Grain Texture Overlay -->
   <div class="noise-overlay" aria-hidden="true"></div>
 
@@ -113,7 +113,8 @@
     <div class="center-stage" id="center-stage" aria-live="polite">
       <div class="word-card" id="word-card">
         <div class="word-meta" id="word-meta">
-          <span class="meta-index" id="meta-index">N° 1</span>
+          <span class="meta-index" id="meta-index">N° 1 / 10</span>
+          <div class="round-pips" id="round-pips" aria-label="Progression de la série"></div>
         </div>
 
         <div class="word-container" id="word-container">
@@ -134,13 +135,117 @@
     <div class="stage-footer">
       <div class="prompt-continue" id="prompt-continue">
         <button class="continue-button" id="btn-continue" type="button" aria-label="Continuer vers le mot suivant">
-          <span class="continue-label-desktop">Cliquer pour continuer</span>
-          <span class="continue-label-touch">Toucher pour continuer</span>
+          <span class="continue-label-desktop" id="continue-label-desktop">Cliquer pour continuer</span>
+          <span class="continue-label-touch" id="continue-label-touch">Toucher pour continuer</span>
           <span class="continue-arrow">→</span>
           <span class="continue-badge">ESPACE</span>
         </button>
       </div>
     </div>
+
+    <!-- Editorial Start Screen Overlay -->
+    <section class="editorial-overlay intro-overlay" id="intro-overlay" aria-labelledby="intro-title">
+      <div class="editorial-card intro-card">
+        <div class="editorial-kicker">ÉDITION SPÉCIALE · SÉRIE DE 10 MOTS</div>
+        <h2 class="editorial-headline" id="intro-title">L'Épreuve des Idées</h2>
+        <p class="editorial-lead">
+          Dix mots du quotidien français. Deux camps irréconciliables.<br>
+          Êtes-vous en phase avec l'inconscient collectif, ou à contre-courant de la majorité ?
+        </p>
+        <div class="intro-rules-grid">
+          <div class="intro-rule-item">
+            <span class="rule-num">01</span>
+            <span class="rule-text">Tranchez à <strong>Gauche</strong> ou à <strong>Droite</strong> sur 10 mots tirés au sort.</span>
+          </div>
+          <div class="intro-rule-item">
+            <span class="rule-num">02</span>
+            <span class="rule-text">Mesurez l'<strong>écart entre vos votes et ceux de la communauté</strong>.</span>
+          </div>
+        </div>
+        <div class="intro-career-bar" id="intro-career-bar" hidden>
+          <span id="intro-career-text">0 série jouée · Record : 0</span>
+        </div>
+        <div class="editorial-actions">
+          <button class="editorial-btn editorial-btn-primary" id="btn-start-session" type="button">
+            <span>Lancer l'Épreuve (10 mots)</span>
+            <span class="btn-arrow">→</span>
+            <span class="btn-key-hint">ENTRÉE</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- End-of-Run Summary Overlay -->
+    <section class="editorial-overlay summary-overlay" id="summary-overlay" aria-labelledby="bilan-title" aria-hidden="true">
+      <div class="editorial-card summary-card">
+        <div class="editorial-kicker" id="bilan-kicker">SÉRIE DE 10 MOTS</div>
+        <h2 class="editorial-headline summary-title" id="bilan-title">Résultats de la série</h2>
+        <p class="summary-archetype-desc" id="bilan-archetype-desc">
+          Vous avez voté comme la majorité sur 8 mots sur 10 (68% d'accord moyen).
+        </p>
+
+        <!-- Dual Metrics: Community Alignment & Relative Divergence -->
+        <div class="bilan-metrics-grid">
+          <div class="bilan-metric-box">
+            <div class="metric-header">
+              <span class="metric-label">ACCORD MAJORITAIRE</span>
+              <span class="metric-rank-badge" id="bilan-flair-badge">80%</span>
+            </div>
+            <div class="metric-big-score">
+              <span id="bilan-majority-score">8</span><span class="metric-score-total">/ 10</span>
+            </div>
+            <div class="metric-subtext" id="bilan-majority-sub">En phase avec 68% des votants en moyenne</div>
+          </div>
+
+          <div class="bilan-metric-box">
+            <div class="metric-header">
+              <span class="metric-label">ÉCART VS MAJORITÉ</span>
+              <span class="metric-rank-badge" id="bilan-bias-badge">Aligné</span>
+            </div>
+            <div class="divergence-readout" id="bilan-divergence-headline">
+              Aucun écart
+            </div>
+            <div class="divergence-track" aria-hidden="true">
+              <div class="divergence-axis-labels">
+                <span>← GAUCHE</span>
+                <span>0</span>
+                <span>DROITE →</span>
+              </div>
+              <div class="divergence-bar-bg">
+                <div class="divergence-center-tick"></div>
+                <div class="divergence-fill" id="bilan-divergence-fill"></div>
+                <div class="divergence-marker" id="bilan-divergence-marker" style="left: 50%"></div>
+              </div>
+            </div>
+            <div class="metric-subtext" id="bilan-compass-sub">0 vote à contre-courant</div>
+          </div>
+        </div>
+
+        <!-- Hot Take / Notable Vote Callout -->
+        <div class="bilan-hottake" id="bilan-hottake">
+          <div class="hottake-body">
+            <div class="hottake-label" id="bilan-hottake-label">VOTE LE PLUS À CONTRE-COURANT</div>
+            <div class="hottake-content" id="bilan-hottake-text">—</div>
+          </div>
+          <div class="hottake-badge" id="bilan-hottake-badge">✦</div>
+        </div>
+
+        <!-- 10-Word Recap Section -->
+        <div class="bilan-recap-section">
+          <div class="recap-label">DÉTAIL DES 10 MOTS</div>
+          <div class="bilan-words-list" id="bilan-words-list"></div>
+        </div>
+
+        <!-- Action: Play Again -->
+        <div class="editorial-actions summary-actions">
+          <button class="editorial-btn editorial-btn-primary" id="btn-play-again" type="button">
+            <span>Nouvelle Série (10 mots)</span>
+            <span class="btn-arrow">→</span>
+            <span class="btn-key-hint">ESPACE</span>
+          </button>
+        </div>
+      </div>
+    </section>
 
   </main>
 
