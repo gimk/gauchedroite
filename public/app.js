@@ -1459,7 +1459,7 @@
   let lastRevealedLeftPct = 50;
 
   function canUseHoverPhysics() {
-    if (touchState.active || Date.now() - touchState.lastEndTime < 600) {
+    if (touchState.active || Date.now() - touchState.lastEndTime < 1200) {
       return false;
     }
     return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -1470,6 +1470,18 @@
     spring.targetPullY = 0;
     spring.targetRot = 0;
     spring.targetSplit = 50;
+  }
+
+  function resetSpring() {
+    spring.pullX = 0;
+    spring.pullY = 0;
+    spring.rot = 0;
+    spring.targetPullX = 0;
+    spring.targetPullY = 0;
+    spring.targetRot = 0;
+    document.documentElement.style.setProperty('--pull-x', '0px');
+    document.documentElement.style.setProperty('--pull-y', '0px');
+    document.documentElement.style.setProperty('--pull-rot', '0deg');
   }
 
   function onMouseMove(e) {
@@ -1693,13 +1705,8 @@
     DOM.body.classList.remove('hover-left', 'hover-right');
     DOM.body.classList.add('revealing');
 
-    // Smoothly return center word offsets to 0
-    spring.targetPullX = 0;
-    spring.targetPullY = 0;
-    spring.targetRot = 0;
-    document.documentElement.style.setProperty('--pull-x', '0px');
-    document.documentElement.style.setProperty('--pull-y', '0px');
-    document.documentElement.style.setProperty('--pull-rot', '0deg');
+    // Smoothly zero center word offsets and spring physics
+    resetSpring();
 
     // Highlight user selection badge
     DOM.badgeLeft.classList.toggle('is-selected', side === 'left');
@@ -1838,13 +1845,16 @@
     if (Date.now() - revealTimestamp < ADVANCE_GUARD_DELAY_MS) return;
 
     currentState = STATES.REVEALING;
+    touchState.active = false;
+    touchState.moved = false;
 
-    // Reset split smoothly back to 50%
-    DOM.body.classList.remove('revealed');
+    // Reset split smoothly back to 50% and zero all word physics offsets
+    DOM.body.classList.remove('revealed', 'hover-left', 'hover-right');
     DOM.body.classList.add('resetting');
     document.documentElement.style.setProperty('--split-pos', '50%');
     spring.split = 50;
     spring.targetSplit = 50;
+    resetSpring();
 
     // Animate word exit
     DOM.mainWord.classList.add('word-exit-up');
@@ -1868,7 +1878,10 @@
 
         setTimeout(() => {
           DOM.mainWord.classList.remove('word-enter-active');
-          DOM.body.classList.remove('resetting');
+          DOM.body.classList.remove('resetting', 'hover-left', 'hover-right');
+          resetSpring();
+          touchState.active = false;
+          touchState.moved = false;
           currentState = STATES.VOTING;
         }, 340);
       });

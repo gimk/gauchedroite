@@ -221,15 +221,21 @@ html, body {
 
 /* Smooth transition when in revealed or resetting mode */
 body.revealed .side-panel,
-body.revealing .side-panel,
-body.resetting .side-panel {
+body.revealing .side-panel {
   transition: var(--transition-split);
 }
 
+body.resetting .side-panel {
+  transition: width 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 body.revealed .split-hairline,
-body.revealing .split-hairline,
-body.resetting .split-hairline {
+body.revealing .split-hairline {
   transition: left 0.92s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body.resetting .split-hairline {
+  transition: left 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Ambient Subtle Lighting Glow */
@@ -374,24 +380,6 @@ body.revealing .side-voting-hint {
   transform: translateX(-50%);
   box-shadow: 0 0 12px rgba(247, 243, 235, 0.35);
   will-change: left;
-}
-
-.hairline-knot {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 9px;
-  height: 9px;
-  background: var(--color-cream);
-  border: 2px solid var(--color-dark);
-  border-radius: 50%;
-  box-shadow: 0 0 14px rgba(255, 255, 255, 0.75);
-  transition: transform 0.3s ease;
-}
-
-body.revealed .hairline-knot {
-  transform: translate(-50%, -50%) scale(1.3);
 }
 
 /* ==========================================================================
@@ -741,7 +729,7 @@ body.revealed .side-results {
 .word-enter-active {
   opacity: 1 !important;
   transform: translateY(0) scale(1) !important;
-  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1), transform 0.32s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 /* ==========================================================================
