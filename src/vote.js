@@ -12,6 +12,135 @@ for (const [word, counts] of Object.entries(SEED_VOTES)) {
 }
 
 // ============================================================================
+// Bot Filtering (Headers, UA, Cloudflare Signals, Honeypot & HMAC Challenge)
+// ============================================================================
+const CHALLENGE_TTL_MS = 2 * 3600_000;    // 2h challenge token lifetime
+const CHALLENGE_MIN_AGE_MS = 250;         // Min 250ms between challenge & vote
+const BOT_UA_PATTERN = /bot|crawl|spider|slurp|scraper|headless|phantomjs|puppeteer|playwright|selenium|webdriver|curl|wget|python-requests|python-urllib|aiohttp|httpx|go-http-client|node-fetch|undici|axios|java\/|okhttp|libwww-perl|postman|insomnia|httpie/i;
+
+let ephemeralChallengeSecret = null;
+
+function getChallengeSecret(env) {
+  if (env?.BOT_SECRET && typeof env.BOT_SECRET === 'string') {
+    return env.BOT_SECRET;
+  }
+  if (!ephemeralChallengeSecret) {
+    const bytes = new Uint8Array(32);
+    crypto.getRandomValues(bytes);
+    ephemeralChallengeSecret = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+  }
+  return ephemeralChallengeSecret;
+}
+
+function toBase64Url(bytes) {
+  let binary = '';
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+async function signChallengePayload(ip, issuedAt, nonce, secret) {
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  const sig = await crypto.subtle.sign(
+    'HMAC',
+    key,
+    encoder.encode(`${ip}:${issuedAt}:${nonce}`)
+  );
+  return toBase64Url(new Uint8Array(sig));
+}
+
+function timingSafeEqual(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) {
+    return false;
+  }
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) {
+    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return diff === 0;
+}
+
+async function createChallengeToken(ip, env) {
+  const issuedAt = Date.now();
+  const nonceBytes = new Uint8Array(12);
+  crypto.getRandomValues(nonceBytes);
+  const nonce = toBase64Url(nonceBytes);
+  const sig = await signChallengePayload(ip, issuedAt, nonce, getChallengeSecret(env));
+  return `${issuedAt}.${nonce}.${sig}`;
+}
+
+async function verifyChallengeToken(token, ip, env) {
+  if (typeof token !== 'string' || !token) {
+    return { valid: false, reason: 'invalid_challenge' };
+  }
+  const parts = token.split('.');
+  if (parts.length !== 3) {
+    return { valid: false, reason: 'invalid_challenge' };
+  }
+  const [issuedAtStr, nonce, sig] = parts;
+  const issuedAt = Number(issuedAtStr);
+  if (!Number.isFinite(issuedAt) || !nonce || !sig) {
+    return { valid: false, reason: 'invalid_challenge' };
+  }
+
+  const expectedSig = await signChallengePayload(ip, issuedAt, nonce, getChallengeSecret(env));
+  if (!timingSafeEqual(sig, expectedSig)) {
+    return { valid: false, reason: 'invalid_challenge' };
+  }
+
+  const age = Date.now() - issuedAt;
+  if (age > CHALLENGE_TTL_MS) {
+    return { valid: false, reason: 'expired_challenge' };
+  }
+  if (age < CHALLENGE_MIN_AGE_MS) {
+    return { valid: false, reason: 'challenge_too_fast' };
+  }
+
+  return { valid: true };
+}
+
+function detectBotRequest(request) {
+  const botMgmt = request.cf?.botManagement;
+  if (botMgmt) {
+    if (botMgmt.verifiedBot === true) {
+      return { isBot: true, reason: 'cf_verified_bot' };
+    }
+    if (typeof botMgmt.score === 'number' && botMgmt.score < 30) {
+      return { isBot: true, reason: 'cf_low_bot_score' };
+    }
+  }
+
+  const ua = request.headers.get('User-Agent') || '';
+  if (ua.length < 10 || BOT_UA_PATTERN.test(ua)) {
+    return { isBot: true, reason: 'bot_user_agent' };
+  }
+
+  if (!request.headers.get('Accept-Language')) {
+    return { isBot: true, reason: 'missing_accept_language' };
+  }
+
+  const secFetchMode = request.headers.get('Sec-Fetch-Mode');
+  if (secFetchMode && secFetchMode !== 'cors' && secFetchMode !== 'same-origin') {
+    return { isBot: true, reason: 'invalid_fetch_metadata' };
+  }
+
+  const secFetchDest = request.headers.get('Sec-Fetch-Dest');
+  if (secFetchDest && secFetchDest !== 'empty') {
+    return { isBot: true, reason: 'invalid_fetch_metadata' };
+  }
+
+  return { isBot: false };
+}
+
+// ============================================================================
 // Anti-Spam, Rate-Limiting & Per-Word Vote Deduplication
 // ============================================================================
 const RATE_LIMIT_WINDOW_MS = 60_000;      // 1 minute sliding window
@@ -176,9 +305,18 @@ export async function onRequestOptions(context) {
 export async function onRequestPost(context) {
   const { request } = context;
 
-  // 1. Block cross-site POST requests
+  // 1. Block cross-site POST requests & automated bot clients
   if (isCrossSiteRequest(request)) {
     return jsonResponse({ error: "Cross-origin voting is not allowed" }, 403, request);
+  }
+
+  const botCheck = detectBotRequest(request);
+  if (botCheck.isBot) {
+    return jsonResponse(
+      { error: "Automated requests are not allowed", reason: botCheck.reason },
+      403,
+      request
+    );
   }
 
   // 2. Reject oversized payloads (> 1KB)
@@ -192,6 +330,26 @@ export async function onRequestPost(context) {
     body = await request.json();
   } catch {
     return jsonResponse({ error: "Invalid JSON body" }, 400, request);
+  }
+
+  // 2b. Reject honeypot-populated requests
+  if (body?.website || body?.hp) {
+    return jsonResponse(
+      { error: "Automated requests are not allowed", reason: "honeypot" },
+      403,
+      request
+    );
+  }
+
+  // 2c. Verify short-lived HMAC challenge token bound to client IP
+  const clientIp = getClientIp(request);
+  const challengeCheck = await verifyChallengeToken(body?.token, clientIp, context.env);
+  if (!challengeCheck.valid) {
+    return jsonResponse(
+      { error: "Invalid or expired vote challenge", reason: challengeCheck.reason },
+      403,
+      request
+    );
   }
 
   const word = typeof body?.word === 'string' ? body.word.trim() : '';
@@ -208,7 +366,6 @@ export async function onRequestPost(context) {
   }
 
   // 3. Enforce per-IP rate limiting & per-word vote deduplication
-  const clientIp = getClientIp(request);
   const rateCheck = checkRateLimitAndDuplicate(clientIp, word);
   if (!rateCheck.allowed) {
     const status = rateCheck.reason === 'duplicate_word' ? 409 : 429;
@@ -312,6 +469,30 @@ export async function onRequestPost(context) {
 export async function onRequestGet(context) {
   const { request } = context;
   const url = new URL(request.url);
+
+  if (url.searchParams.get('challenge') === '1') {
+    if (isCrossSiteRequest(request)) {
+      return jsonResponse({ error: "Cross-origin requests are not allowed" }, 403, request);
+    }
+    const botCheck = detectBotRequest(request);
+    if (botCheck.isBot) {
+      return jsonResponse(
+        { error: "Automated requests are not allowed", reason: botCheck.reason },
+        403,
+        request
+      );
+    }
+    const clientIp = getClientIp(request);
+    const token = await createChallengeToken(clientIp, context.env);
+    return new Response(JSON.stringify({ token, minWaitMs: CHALLENGE_MIN_AGE_MS }), {
+      status: 200,
+      headers: {
+        ...getCorsHeaders(request),
+        'Cache-Control': 'no-store',
+      },
+    });
+  }
+
   const word = url.searchParams.get('word')?.trim();
 
   if (!word) {

@@ -3285,19 +3285,61 @@
     if (window.location.protocol === 'file:') {
       voteResult = computeLocalVote(currentWord, side);
     } else {
-      try {
-        const response = await fetch('/api/vote', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ word: currentWord, side })
-        });
-        voteResult = response.ok ? await response.json() : computeLocalVote(currentWord, side);
-      } catch (_) {
-        voteResult = computeLocalVote(currentWord, side);
-      }
+      voteResult = await submitVoteToApi(currentWord, side);
     }
 
     processVerdictAndReveal(voteResult);
+  }
+
+  let voteChallengeToken = null;
+  let voteChallengePromise = null;
+
+  async function fetchVoteChallenge(force = false) {
+    if (window.location.protocol === 'file:') return null;
+    if (voteChallengeToken && !force) return voteChallengeToken;
+    if (voteChallengePromise && !force) return voteChallengePromise;
+
+    voteChallengePromise = (async () => {
+      try {
+        const res = await fetch('/api/vote?challenge=1', { cache: 'no-store' });
+        if (!res.ok) return null;
+        const data = await res.json();
+        voteChallengeToken = typeof data?.token === 'string' ? data.token : null;
+        return voteChallengeToken;
+      } catch (_) {
+        return null;
+      } finally {
+        voteChallengePromise = null;
+      }
+    })();
+
+    return voteChallengePromise;
+  }
+
+  async function submitVoteToApi(word, side) {
+    try {
+      const token = await fetchVoteChallenge();
+      const postVote = (activeToken) => fetch('/api/vote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ word, side, token: activeToken, website: '' })
+      });
+
+      let response = await postVote(token);
+      if (response.status === 403) {
+        const errData = await response.clone().json().catch(() => null);
+        if (errData?.reason === 'invalid_challenge' || errData?.reason === 'expired_challenge') {
+          const freshToken = await fetchVoteChallenge(true);
+          if (freshToken) {
+            response = await postVote(freshToken);
+          }
+        }
+      }
+
+      return response.ok ? await response.json() : computeLocalVote(word, side);
+    } catch (_) {
+      return computeLocalVote(word, side);
+    }
   }
 
   function computeLocalVote(word, side) {
@@ -3816,6 +3858,7 @@
   function init() {
     loadState();
     setupEventListeners();
+    fetchVoteChallenge();
     physicsLoop();
     showIntroScreen();
   }
